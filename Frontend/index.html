@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>සන්සුන් - Mental Health Platform</title>
+    
+    <!-- External UI Resources -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #4a7c59;
+            --primary-hover: #3b6346;
+            --primary-light: #f0f7f4;
+            --accent: #5b82a6;
+            --bg: #f7f9f8;
+            --card-bg: #ffffff;
+            --text-main: #2d3732;
+            --text-muted: #6b7c75;
+            --border: #e2e9e5;
+            --shadow: 0 10px 30px rgba(74, 124, 89, 0.08);
+            --radius: 20px;
+            --danger: #dc2626;
+            --whatsapp: #25d366;
+        }
+
+        [data-theme="dark"] {
+            --bg: #131b17;
+            --card-bg: #1c2621;
+            --text-main: #e8eee9;
+            --text-muted: #8fa097;
+            --border: #2c3a33;
+            --primary: #6b9e7a;
+            --primary-hover: #558362;
+            --primary-light: #182820;
+            --accent: #7a9ebc;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; }
+
+        /* Navigation Header Mobile Friendly */
+        header, .navbar, .nav-container {
+            position: sticky; top: 0; background: var(--card-bg);
+            border-bottom: 1px solid var(--border); padding: 10px 15px;
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+            gap: 8px; z-index: 1000;
+        }
+
+        .logo { font-size: 1.2rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 15px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; font-size: 0.9rem; }
+        
+        .nav-controls, .nav-buttons, .action-buttons {
+            display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+        }
+
+        .btn-ctrl {
+            background: var(--primary-light); border: 1px solid var(--border);
+            color: var(--primary); padding: 6px 12px; border-radius: 30px;
+            cursor: pointer; font-weight: 600; font-size: 0.8rem;
+            display: flex; align-items: center; gap: 5px; text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-login {
+            background: var(--primary);
+            color: #ffffff !important;
+        }
+
+        .wrapper { max-width: 1050px; margin: 0 auto; padding: 0 15px; }
+
+        .audio-bar {
+            background: var(--card-bg); border-bottom: 1px solid var(--border);
+            padding: 8px 15px; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 0.85rem; flex-wrap: wrap;
+        }
+
+        /* Hero Section Fixes */
+        .hero {
+            padding: 30px 15px; background: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h1, .hero-title, .hero-text h2 {
+            font-size: 1.5rem !important;
+            line-height: 1.3;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: 700;
+        }
+
+        p.hero-subtitle, .hero-text p, .subtitle {
+            font-size: 0.9rem !important;
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 95%;
+            margin: 0 auto 15px auto;
+        }
+
+        .hero-grid { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; text-align: center; }
+
+        .btn-action {
+            background: var(--primary); color: white; padding: 10px 20px; border-radius: 30px;
+            text-decoration: none; font-weight: 600; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
+        }
+
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; }
+
+        .hero-image-container img, .hero-image img, .main-img {
+            width: 100%;
+            max-width: 340px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: block;
+            margin: 15px auto;
+            object-fit: cover;
+        }
+
+        .section { padding: 35px 0; border-bottom: 1px solid var(--border); }
+        .section-title { text-align: center; font-size: 1.4rem; color: var(--primary); margin-bottom: 20px; font-weight: 700; }
+
+        /* Mood Journal Emoji Size Fix */
+        .mood-grid, .mood-container, .emoji-picker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .mood-btn, .emoji-btn {
+            font-size: 24px !important;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background-color: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .mood-btn:hover, .mood-btn.selected {
+            transform: scale(1.1);
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .counseling-banner {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #ffffff; padding: 20px; border-radius: var(--radius);
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 25px; box-shadow: var(--shadow);
+        }
+
+        .banner-content h3 { font-size: 1.15rem; margin-bottom: 5px; color: #ffffff; }
+        .banner-content p { font-size: 0.88rem; opacity: 0.9; color: #ffffff; }
+        .banner-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .btn-banner-primary { background-color: #ffffff; color: var(--primary); padding: 8px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; border: none; cursor: pointer; }
+        .btn-banner-emergency { background-color: var(--danger); color: #ffffff; padding: 8px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+
+        .wizard-container {
+            max-width: 650px; margin: 0 auto; background: var(--card-bg);
+            padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+
+        .tab-container { display: flex; background: var(--primary-light); padding: 4px; border-radius: 12px; gap: 4px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
+        .tab-btn.active { background: var(--card-bg); color: var(--primary); }
+
+        .progress-bar-bg { width: 100%; height: 6px; background: var(--primary-light); border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+        .progress-bar-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
+
+        .options-group { display: grid; gap: 8px; margin: 15px 0; }
+        .option-btn { background: var(--bg); border: 1.5px solid var(--border); padding: 10px 14px; border-radius: 10px; cursor: pointer; font-size: 0.88rem; font-weight: 500; display: block; }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + .option-btn { background: var(--primary-light); color: var(--primary); border-color: var(--primary); font-weight: 600; }
+
+        .nav-actions { display: flex; gap: 10px; }
+        .btn-nav { flex: 1; padding: 10px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer; }
+        .btn-prev { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-next { background: var(--primary); color: white; }
+
+        .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+        .check-item { background: var(--card-bg); padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); font-size: 0.88rem; display: flex; align-items: center; gap: 10px; }
+
+        .helpline-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 20px; }
+        .helpline-card { background: var(--card-bg); padding: 16px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
+        .helpline-card i { font-size: 1.2rem; color: var(--primary); margin-bottom: 6px; }
+        .helpline-card strong { color: var(--primary); font-size: 1.2rem; display: block; }
+        .helpline-card span { font-size: 0.8rem; color: var(--text-muted); }
+
+        .directory-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .directory-table th, .directory-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .directory-table th { background: var(--primary-light); color: var(--primary); font-weight: 700; }
+
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: var(--radius); text-align: left; max-width: 480px; width: 92%; position: relative; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 12px; right: 15px; font-size: 1.4rem; color: var(--text-muted); cursor: pointer; border: none; background: none; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text-main); font-size: 0.85rem;
+        }
+
+        .breath-circle {
+            width: 120px; height: 120px; background: var(--primary-light); border: 4px solid var(--primary);
+            border-radius: 50%; margin: 20px auto; display: flex; justify-content: center; align-items: center;
+            font-weight: bold; color: var(--primary); font-size: 1rem; transition: transform 4s ease-in-out;
+        }
+        .breath-circle.expand { transform: scale(1.25); transition: transform 4s ease-in-out; }
+        .breath-circle.hold { transform: scale(1.25); }
+        .breath-circle.shrink { transform: scale(0.9); transition: transform 8s ease-in-out; }
+
+        .grounding-list { list-style: none; margin: 12px 0; }
+        .grounding-list li { background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--primary); font-size: 0.85rem; }
+
+        /* Login UI Extras */
+        .btn-social {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text-main); font-weight: 600; font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            margin-top: 10px;
+        }
+        .divider { text-align: center; margin: 15px 0; font-size: 0.8rem; color: var(--text-muted); position: relative; }
+        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
+        .divider::before { left: 0; } .divider::after { right: 0; }
+
+        /* CHATBOT STYLES */
+        .chatbot-toggle {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 55px; height: 55px; border-radius: 50%;
+            background: var(--primary); color: white; border: none;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2); cursor: pointer;
+            z-index: 1500; font-size: 1.3rem; display: flex;
+            align-items: center; justify-content: center;
+        }
+
+        .chatbot-window {
+            position: fixed; bottom: 85px; right: 15px;
+            width: 360px; height: 500px; max-width: calc(100vw - 30px);
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            z-index: 1500; display: none; flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header { background: var(--primary); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.9rem; }
+        .chat-header div { display: flex; align-items: center; gap: 8px; }
+        .chat-header button { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; }
+
+        .chat-body {
+            flex: 1; padding: 12px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 8px;
+            background: var(--bg); font-size: 0.85rem; line-height: 1.5; word-break: break-word;
+        }
+
+        .chat-msg { max-width: 85%; padding: 8px 12px; border-radius: 14px; white-space: pre-wrap; }
+        .chat-msg.bot { background: var(--card-bg); color: var(--text-main); align-self: flex-start; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+        .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        .quick-chips { display: flex; gap: 5px; padding: 6px 10px; overflow-x: auto; background: var(--card-bg); border-top: 1px solid var(--border); }
+        .quick-chips button { background: var(--bg); border: 1px solid var(--border); color: var(--text-main); border-radius: 15px; padding: 4px 8px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
+
+        .chat-input-area { display: flex; padding: 8px; background: var(--card-bg); border-top: 1px solid var(--border); gap: 5px; align-items: center; }
+        .chat-input-area input { flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); font-size: 0.85rem; outline: none; }
+        .chat-input-area button { background: var(--primary); color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+
+        @media (min-width: 769px) {
+            .hero-grid { grid-template-columns: 1.2fr 1fr; text-align: left; }
+            h1, .hero-title, .hero-text h2 { text-align: left; font-size: 2rem !important; }
+            p.hero-subtitle, .hero-text p, .subtitle { text-align: left; margin: 0 0 20px 0; }
+            .hero-image-container img, .hero-image img, .main-img { margin: 0 auto; }
+        }
+
+        @media (max-width: 768px) { 
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVIGATION BAR -->
+<nav class="navbar">
+    <a href="#" class="logo"><i class="fa-solid fa-leaf"></i> <span id="brandName">සන්සුන්</span></a>
+    <ul class="nav-links">
+        <li><a href="#assessment" id="navAssessment">ඇගයීම</a></li>
+        <li><a href="#mood" id="navMood">Mood Journal</a></li>
+        <li><a href="#counseling" id="navCounseling">උපදේශනය</a></li>
+        <li><a href="#history" id="navHistory">ප්‍රගතිය</a></li>
+        <li><a href="#directory" id="navDirectory">සායන</a></li>
+        <li id="dashboardNavItem" style="display:none;"><a href="dashboard.html" id="navDashboard" style="color:var(--primary); font-weight:bold;">Dashboard</a></li>
+    </ul>
+    <div class="nav-controls">
+        <button class="btn-ctrl btn-login" onclick="openLoginModal()" id="userAuthBtn"><i class="fa-solid fa-right-to-bracket"></i> <span id="navLogin">ඇතුළු වන්න</span></button>
+        <button class="btn-ctrl" onclick="openGroundingModal()"><i class="fa-solid fa-hands-holding"></i> Grounding</button>
+        <button class="btn-ctrl" onclick="openBreathingModal()"><i class="fa-solid fa-wind"></i> <span id="navBreath">හුස්ම</span></button>
+        <button class="btn-ctrl" onclick="toggleLanguage()"><i class="fa-solid fa-globe"></i> <span id="langTxt">English</span></button>
+        <button class="btn-ctrl" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+    </div>
+</nav>
+
+<!-- AMBIENT AUDIO BAR -->
+<div class="audio-bar">
+    <span id="audioLabel"><i class="fa-solid fa-music"></i> සොබාදහමේ ශබ්ද (Ambient Sound):</span>
+    <button class="btn-ctrl" onclick="toggleAudio()"><i class="fa-solid fa-play" id="audioIcon"></i> Play/Pause</button>
+    <a href="https://wa.me/94771234567?text=Hello%20Sansun%20Support" target="_blank" rel="noopener noreferrer" class="btn-ctrl btn-whatsapp">
+        <i class="fa-brands fa-whatsapp"></i> <span id="btnWa">WhatsApp Support</span>
+    </a>
+    <audio id="ambientAudio" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=rain-and-puddle-113337.mp3"></audio>
+</div>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="wrapper">
+        <div class="hero-grid">
+            <div class="hero-text">
+                <h2 id="heroTitle">ඔබේ මානසික සුවතාවය වෙනුවෙන් සුරක්ෂිත ඉඩක්</h2>
+                <p id="heroDesc">දෛනික ජීවිතයේ පීඩනය හඳුනාගෙන මනස සන්සුන් කරගැනීමට අවශ්‍ය පහසුකම් මෙහි ඇතුළත් වේ.</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content: center;">
+                    <a href="#assessment" class="btn-action"><i class="fa-solid fa-heart-pulse"></i> <span id="heroBtn">පරීක්ෂාව ආරම්භ කරන්න</span></a>
+                    <button class="btn-action btn-whatsapp" onclick="window.open('https://wa.me/94771234567?text=Hello%20Sansun%20Support','_blank')"><i class="fa-brands fa-whatsapp"></i> WhatsApp Chat</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80" alt="Relaxation" class="main-img">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MOOD JOURNAL SECTION -->
+<section class="section" id="mood">
+    <div class="wrapper">
+        <h2 class="section-title" id="moodTitle">දෛනික මනෝභාවය සටහන් කරන්න (Daily Mood Journal)</h2>
+        <div class="wizard-container" style="text-align: center;">
+            <p style="margin-bottom:15px; color:var(--text-muted);" id="moodDesc">අද දිනයේ ඔබට දැනෙන හැඟීම තෝරන්න:</p>
+            <div class="mood-grid">
+                <button class="mood-btn" onclick="selectMood('😊', this)" aria-label="Happy">😊</button>
+                <button class="mood-btn" onclick="selectMood('😐', this)" aria-label="Neutral">😐</button>
+                <button class="mood-btn" onclick="selectMood('😔', this)" aria-label="Sad">😔</button>
+                <button class="mood-btn" onclick="selectMood('😡', this)" aria-label="Angry">😡</button>
+            </div>
+            <div class="form-group">
+                <textarea id="moodNote" rows="2" placeholder="අද දිනය ගැන කුඩා සටහනක් තබන්න (Optional)..."></textarea>
+            </div>
+            <button class="btn-action" onclick="saveMoodEntry()" id="btnSaveMood">මනෝභාවය Save කරන්න</button>
+            <div id="moodLogList" style="margin-top:20px; text-align:left; font-size:0.85rem; color:var(--text-muted);"></div>
+        </div>
+    </div>
+</section>
+
+<!-- COUNSELING BANNER -->
+<section class="section" id="counseling">
+    <div class="wrapper">
+        <div class="counseling-banner">
+            <div class="banner-content">
+                <h3 id="bannerTitle">ඔබට කවුරුන් හෝ සමඟ කතා කිරීමට අවශ්‍යද?</h3>
+                <p id="bannerDesc">වෘත්තීය උපදේශකයෙකු හා සම්බන්ධ වීමට හෝ ක්ෂණික සහාය ලබා ගැනීමට ඉදිරියට යන්න.</p>
+            </div>
+            <div class="banner-actions">
+                <button class="btn-banner-primary" onclick="openCounselingModal()" id="btnBookCounselor">උපදේශන වාරයක් වෙන්කරගන්න</button>
+                <a href="tel:1926" class="btn-banner-emergency" id="btnCall1926">1926 අමතන්න</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ASSESSMENT SECTION (PHQ-9 / GAD-7) -->
+<section class="section" id="assessment">
+    <div class="wrapper">
+        <div class="wizard-container">
+            <div class="tab-container">
+                <button class="tab-btn active" id="tabPhq" onclick="switchTest('phq9')">PHQ-9 (විෂාදය)</button>
+                <button class="tab-btn" id="tabGad" onclick="switchTest('gad7')">GAD-7 (කාංසාව)</button>
+            </div>
+
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+            <form id="wizardForm" onsubmit="event.preventDefault();">
+                <div id="questionsContainer"></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-nav btn-prev" id="prevBtn" onclick="navigateStep(-1)">ආපසු</button>
+                    <button type="button" class="btn-nav btn-next" id="nextBtn" onclick="navigateStep(1)">ඉදිරියට</button>
+                </div>
+            </form>
+
+            <div id="result" style="display:none; text-align: center;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRESS CHART SECTION -->
+<section class="section" id="history">
+    <div class="wrapper">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="section-title" id="chartTitle" style="margin-bottom:0;">ඔබේ ප්‍රගතිය (Past Scores)</h2>
+            <button class="btn-ctrl" onclick="togglePinProtection()" id="btnPinToggle"><i class="fa-solid fa-lock"></i> PIN Lock</button>
+        </div>
+        <div id="protectedHistoryContent" style="max-width:650px; margin:0 auto; background:var(--card-bg); padding:20px; border-radius:var(--radius); border:1px solid var(--border);">
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- RESOURCE DIRECTORY SECTION -->
+<section class="section" id="directory">
+    <div class="wrapper">
+        <h2 class="section-title" id="dirTitle">දිස්ත්‍රික්ක අනුව මානසික සෞඛ්‍ය සායන (Resource Directory)</h2>
+        <div style="overflow-x:auto;">
+            <table class="directory-table">
+                <thead>
+                    <tr>
+                        <th id="thDistrict">දිස්ත්‍රික්කය</th>
+                        <th id="thHospital">රෝහල / මධ්‍යස්ථානය</th>
+                        <th id="thContact">දුරකථන අංකය</th>
+                    </tr>
+                </thead>
+                <tbody id="directoryBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- DAILY CHECKLIST SECTION -->
+<section class="section">
+    <div class="wrapper">
+        <h2 class="section-title" id="checkTitle">දෛනික මනෝවිද්‍යාත්මක පුරුදු (Daily Self-Care)</h2>
+        <div class="checklist-grid">
+            <div class="check-item"><input type="checkbox"> <span id="chk1">විනාඩි 10ක් හුස්ම ගැනීමේ ව්‍යායාම කිරීම</span></div>
+            <div class="check-item"><input type="checkbox"> <span id="chk2">වතුර ලීටර 2ක් ලබාගැනීම</span></div>
+            <div class="check-item"><input type="checkbox"> <span id="chk3">විනාඩි 15ක් එළිමහනේ ඇවිදීම</span></div>
+            <div class="check-item"><input type="checkbox"> <span id="chk4">පැය 7-8ක සුවබර නින්දක් ලැබීම</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- HELPLINES SECTION -->
+<section class="section" id="helplines" style="background: var(--primary-light);">
+    <div class="wrapper">
+        <h2 class="section-title" id="helpTitle">ඔබට හදිසි සහායක් අවශ්‍යද?</h2>
+        <p style="text-align:center; color: var(--text-muted);" id="helpDesc">ඔබ දැඩි මානසික පීඩනයකින් පසුවන්නේ නම්, නොමිලේ සහ උපරිම රහස්‍යභාවයෙන් යුතුව සහාය ලබාගැනීමට පහත සේවාවන් අමතන්න.</p>
+        
+        <div class="helpline-grid">
+            <div class="helpline-card">
+                <i class="fa-solid fa-phone-flip"></i>
+                <strong>1926</strong>
+                <span id="help1">ජාතික මානසික සෞඛ්‍ය විද්‍යායතනය</span>
+            </div>
+            <div class="helpline-card">
+                <i class="fa-solid fa-headset"></i>
+                <strong>1333</strong>
+                <span id="help2">CCC Line (24/7 නොමිලේ)</span>
+            </div>
+            <div class="helpline-card">
+                <i class="fa-solid fa-hands-holding-child"></i>
+                <strong>011 2696666</strong>
+                <span id="help3">ශ්‍රී ලංකා සුමිත්‍රයෝ</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT WIDGET -->
+<button class="chatbot-toggle" onclick="toggleChatbot()" aria-label="Toggle Chatbot">
+    <i class="fa-solid fa-comments"></i>
+</button>
+
+<div class="chatbot-window" id="chatbotWindow">
+    <div class="chat-header">
+        <div>
+            <i class="fa-solid fa-robot"></i>
+            <span id="chatTitle">සන්සුන් AI සහායක</span>
+        </div>
+        <button onclick="toggleChatbot()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-msg bot" id="botIntroMsg">ආයුබෝවන්! 👋 මම 'සන්සුන්' AI සහායක. ඔබට අද දැනෙන දේ හෝ සිතට වදදෙන ඕනෑම දෙයක් මා සමඟ බෙදාගන්න පුළුවන්. මා ඔබට උදවු කරන්නේ කෙසේද?</div>
+    </div>
+    <div class="quick-chips">
+        <button onclick="sendQuickChip('මට පීඩනයක් දැනෙනවා')">මට පීඩනයක් දැනෙනවා</button>
+        <button onclick="sendQuickChip('මනස සන්සුන් කරගන්නේ කෙසේද?')">මනස සන්සුන් කරගන්නේ කෙසේද?</button>
+        <button onclick="sendQuickChip('1926 අමතන්නේ කෙසේද?')">1926 අමතන්නේ කෙසේද?</button>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="ඔබේ පණිවිඩය ටයිප් කරන්න..." onkeypress="handleChatKeyPress(event)">
+        <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- LOGIN / ACCOUNT MODAL -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+        <h3 id="modalLoginHeader" style="color:var(--primary); margin-bottom:15px; text-align: center;">ගිණුමට පිවිසෙන්න (Login)</h3>
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+            <div class="form-group">
+                <label id="lblEmail" for="loginEmail">විද්‍යුත් තැපෑල (Email)</label>
+                <input type="email" id="loginEmail" required placeholder="example@mail.com">
+            </div>
+            <div class="form-group">
+                <label id="lblPassword" for="loginPassword">මුරපදය (Password)</label>
+                <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">
+                * Admin සඳහා <strong>admin@sansun.com</strong> ලෙස භාවිතා කරන්න.
+            </p>
+            <button type="submit" class="btn-action" style="width:100%; justify-content:center; margin-top:5px;" id="btnLoginSubmit">ඇතුළු වන්න</button>
+        </form>
+
+        <div class="divider" id="lblOr">නොමැතිනම්</div>
+
+        <button class="btn-social" onclick="handleGoogleLogin()">
+            <i class="fa-brands fa-google" style="color:#db4437;"></i> <span id="lblGoogleLogin">Google ගිණුමෙන් පිවිසෙන්න</span>
+        </button>
+
+        <p style="text-align:center; margin-top:15px; font-size:0.8rem; color:var(--text-muted);" id="loginFooterNote">
+            නව ගිණුමක් නොමැතිද? <a href="register.html" style="color:var(--primary); font-weight:bold;">ලියාපදිංචි වන්න</a>
+        </p>
+    </div>
+</div>
+<!-- REGISTER MODAL -->
+<div id="registerModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width: 450px; padding: 2.5rem; border-radius: 20px;">
+        <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
+        
+        <div class="brand-header" style="text-align: center; margin-bottom: 2rem;">
+            <div class="logo" style="font-size: 1.8rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fa-solid fa-brain"></i> Sansun
+            </div>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 5px;">නව ගිණුමක් සාදා පද්ධතියට එකතු වන්න</p>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group" style="margin-bottom: 1.2rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">සම්පූර්ණ නම</label>
+                <div class="input-wrapper" style="position: relative; display: flex; align-items: center;">
+                    <i class="fa-solid fa-user" style="position: absolute; left: 14px; color: #64748b;"></i>
+                    <input type="text" id="regFullname" class="form-control" placeholder="ඔබගේ නම ඇතුළත් කරන්න" required style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.2rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">විද්‍යුත් තැපෑල (Email)</label>
+                <div class="input-wrapper" style="position: relative; display: flex; align-items: center;">
+                    <i class="fa-solid fa-envelope" style="position: absolute; left: 14px; color: #64748b;"></i>
+                    <input type="email" id="regEmail" class="form-control" placeholder="example@mail.com" required style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.2rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">මුරපදය (Password)</label>
+                <div class="input-wrapper" style="position: relative; display: flex; align-items: center;">
+                    <i class="fa-solid fa-lock" style="position: absolute; left: 14px; color: #64748b;"></i>
+                    <input type="password" id="regPassword" class="form-control" placeholder="********" required minlength="6" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.2rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">මුරපදය තහවුරු කරන්න</label>
+                <div class="input-wrapper" style="position: relative; display: flex; align-items: center;">
+                    <i class="fa-solid fa-shield-halved" style="position: absolute; left: 14px; color: #64748b;"></i>
+                    <input type="password" id="regConfirmPassword" class="form-control" placeholder="********" required style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" style="width: 100%; background: var(--primary); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-weight: 600; cursor: pointer;">ලියාපදිංචි වන්න</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #64748b;">
+            දැනටමත් ගිණුමක් තිබේද? <a href="#" onclick="switchToLogin()" style="color: var(--primary); font-weight: 600; text-decoration: none;">ලොගින් වන්න</a>
+        </div>
+    </div>
+</div>
+<!-- COUNSELING MODAL -->
+<div class="modal" id="counselingModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeCounselingModal()">&times;</button>
+        <h3 id="modalCounselHeader" style="color:var(--primary); margin-bottom:15px;">උපදේශන සේවාව හා සම්බන්ධ වන්න</h3>
+        <form id="counselingForm" onsubmit="handleCounselingSubmit(event)">
+            <div class="form-group">
+                <label id="lblPrivacy" for="requestType">රහස්‍යතාවය (Privacy Option)</label>
+                <select id="requestType" required onchange="toggleNameFields()">
+                    <option value="named" id="optNamed">සාමාන්‍ය (නම සහ ශිෂ්‍ය අංකය ඇතුළත් කරන්න)</option>
+                    <option value="anonymous" id="optAnon">අඥාත අයුරින් (Anonymous Request)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="studentDetailsGroup">
+                <label id="lblName" for="studentName">සම්පූර්ණ නම / ශිෂ්‍ය අංකය</label>
+                <input type="text" id="studentName" placeholder="e.g., DIT 14253">
+            </div>
+
+            <div class="form-group">
+                <label id="lblMode" for="preferredMode">උපදේශන ක්‍රමය</label>
+                <select id="preferredMode" required>
+                    <option value="online" id="optOnline">මාර්ගගත (Online Chat / Video Call)</option>
+                    <option value="in-person" id="optInPerson">සෘජුව (In-Person Office Session)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label id="lblDate" for="preferredDate">කැමති දිනය සහ වේලාව</label>
+                <input type="datetime-local" id="preferredDate" required>
+            </div>
+
+            <div class="form-group">
+                <label id="lblNotes" for="notes">කෙටි සටහනක් (Optional)</label>
+                <textarea id="notes" rows="3" placeholder="ඔබට පවසන්නට ඇති දේ මෙහි සටහන් කරන්න..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-action" style="width:100%; justify-content:center;" id="btnSubmitCounsel">ඉල්ලීම යොමු කරන්න</button>
+        </form>
+    </div>
+</div>
+
+<!-- BREATHING EXERCISE MODAL -->
+<div class="modal" id="breathModal">
+    <div class="modal-content" style="text-align: center;">
+        <h3>4-7-8 Breathing Technique</h3>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-top:5px;" id="breathModalSub">මනස සන්සුන් කර ගැනීමට පහත උපදෙස් අනුගමනය කරන්න.</p>
+        <div class="breath-circle" id="breathCircle">ලෑස්ති වන්න...</div>
+        <p id="breathInstruction" style="font-weight:600; color:var(--primary); font-size:0.9rem;"></p>
+        <button class="btn-action" style="margin-top:15px;" onclick="closeBreathingModal()" id="closeBreathBtn">වසා දමන්න</button>
+    </div>
+</div>
+
+<!-- GROUNDING MODAL -->
+<div class="modal" id="groundingModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeGroundingModal()">&times;</button>
+        <h3 style="color:var(--primary); margin-bottom:10px;" id="groundTitle">5-4-3-2-1 Grounding Technique</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted);" id="groundSub">Panic Attack එකක් හෝ අධික බියක් දැනෙන විට මනස වර්තමානයට ගෙන ඒමට මෙය භාවිතා කරන්න:</p>
+        <ul class="grounding-list" id="groundList"></ul>
+        <button class="btn-action" style="width:100%; justify-content:center;" onclick="closeGroundingModal()" id="groundCloseBtn">තේරුණා / Close</button>
+    </div>
+</div>
+
+<footer style="text-align:center; padding:20px 15px; font-size:0.8rem; color:var(--text-muted);" id="footerText">
+    <p>© 2026 Sansun Health. Medical Disclaimer: This screening tool is for educational purposes only and not a clinical diagnosis.</p>
+</footer>
+
+<script>
+    /* ======================================================================
+       1. GLOBAL CONFIGURATION & DATA DICTIONARIES
+       ====================================================================== */
+    const APP_CONFIG = {
+        apiEndpoint: '/api/chat', 
+        loginApiEndpoint: '/api/login',
+        whatsappNumber: '94771234567'
+    };
+
+    const TRANSLATIONS = {
+        si: {
+            brandName: "සන්සුන්", navBreath: "හුස්ම", navAssessment: "ඇගයීම", navMood: "Mood Journal", navCounseling: "උපදේශනය", navHistory: "ප්‍රගතිය", navDirectory: "සායන", navLogin: "ඇතුළු වන්න", navLogout: "ඉවත් වන්න",
+            heroTitle: "ඔබේ මානසික සුවතාවය වෙනුවෙන් සුරක්ෂිත ඉඩක්", heroDesc: "දෛනික ජීවිතයේ පීඩනය හඳුනාගෙන මනස සන්සුන් කරගැනීමට අවශ්‍ය පහසුකම් මෙහි ඇතුළත් වේ.", heroBtn: "පරීක්ෂාව ආරම්භ කරන්න",
+            moodTitle: "දෛනික මනෝභාවය සටහන් කරන්න (Daily Mood Journal)", moodDesc: "අද දිනයේ ඔබට දැනෙන හැඟීම තෝරන්න:", btnSaveMood: "මනෝභාවය Save කරන්න", moodPlaceholder: "අද දිනය ගැන කුඩා සටහනක් තබන්න (Optional)...", recentEntries: "මෑත සටහන්:",
+            bannerTitle: "ඔබට කවුරුන් හෝ සමඟ කතා කිරීමට අවශ්‍යද?", bannerDesc: "වෘත්තීය උපදේශකයෙකු හා සම්බන්ධ වීමට හෝ ක්ෂණික සහාය ලබා ගැනීමට ඉදිරියට යන්න.",
+            btnBookCounselor: "උපදේශන වාරයක් වෙන්කරගන්න", btnCall1926: "1926 අමතන්න",
+            modalLoginHeader: "ගිණුමට පිවිසෙන්න (Login)", lblEmail: "විද්‍යුත් තැපෑල (Email)", lblPassword: "මුරපදය (Password)", btnLoginSubmit: "ඇතුළු වන්න", lblOr: "නොමැතිනම්", lblGoogleLogin: "Google ගිණුමෙන් පිවිසෙන්න",
+            modalCounselHeader: "උපදේශන සේවාව හා සම්බන්ධ වන්න", lblPrivacy: "රහස්‍යතාවය (Privacy Option)", optNamed: "සාමාන්‍ය (නම සහ ශිෂ්‍ය අංකය ඇතුළත් කරන්න)", optAnon: "අඥාත අයුරින් (Anonymous Request)",
+            lblName: "සම්පූර්ණ නම / ශිෂ්‍ය අංකය", lblMode: "උපදේශන ක්‍රමය", optOnline: "මාර්ගගත (Online Chat / Video Call)", optInPerson: "සෘජුව (In-Person Office Session)",
+            lblDate: "කැමති දිනය සහ වේලාව", lblNotes: "කෙටි සටහනක් (Optional)", btnSubmitCounsel: "ඉල්ලීම යොමු කරන්න", notesPlaceholder: "ඔබට පවසන්නට ඇති දේ මෙහි සටහන් කරන්න...",
+            tabPhq: "PHQ-9 (විෂාදය)", tabGad: "GAD-7 (කාංසාව)", btnPrev: "ආපසු", btnNext: "ඉදිරියට", btnReTest: "නැවත පරීක්ෂා කරන්න", scoreTitle: "ලකුණු මට්ටම", emergencyWarn: "⚠️ ක්ෂණික සහාය ලබා ගැනීමට උපදෙස් දෙනු ලැබේ.", completeMsg: "පරීක්ෂාව සම්පූර්ණයි.",
+            chartTitle: "ඔබේ ප්‍රගතිය (Past Scores)", chartLabel: "ලකුණු සටහන", chartLocked: "🔒 PIN එක මගින් ආරක්ෂිතයි. බලන්න Unlock කරන්න.", pinLockBtn: "PIN Lock", pinUnlockBtn: "Unlocked",
+            dirTitle: "දිස්ත්‍රික්ක අනුව මානසික සෞඛ්‍ය සායන (Resource Directory)", thDistrict: "දිස්ත්‍රික්කය", thHospital: "රෝහල / මධ්‍යස්ථානය", thContact: "දුරකථන අංකය",
+            checkTitle: "දෛනික මනෝවිද්‍යාත්මක පුරුදු (Daily Self-Care)", chk1: "විනාඩි 10ක් හුස්ම ගැනීමේ ව්‍යායාම කිරීම", chk2: "වතුර ලීටර 2ක් ලබාගැනීම", chk3: "විනාඩි 15ක් එළිමහනේ ඇවිදීම", chk4: "පැය 7-8ක සුවබර නින්දක් ලැබීම",
+            helpTitle: "ඔබට හදිසි සහායක් අවශ්‍යද?", helpDesc: "ඔබ දැඩි මානසික පීඩනයකින් පසුවන්නේ නම්, නොමිලේ සහ උපරිම රහස්‍යභාවයෙන් යුතුව සහාය ලබාගැනීමට පහත සේවාවන් අමතන්න.",
+            help1: "ජාතික මානසික සෞඛ්‍ය විද්‍යායතනය", help2: "CCC Line (24/7 නොමිලේ)", help3: "ශ්‍රී ලංකා සුමිත්‍රයෝ",
+            breathModalSub: "මනස සන්සුන් කර ගැනීමට පහත උපදෙස් අනුගමනය කරන්න.", closeBreathBtn: "වසා දමන්න", audioLabel: "සොබාදහමේ ශබ්ද (Ambient Sound):", btnWa: "WhatsApp Support",
+            breathTextReady: "ලෑස්ති වන්න...", breathTextInhale: "හුස්ම ගන්න", breathInstInhale: "තත්පර 4ක් තදින් හුස්ම ගන්න...", breathTextHold: "රඳවා ගන්න", breathInstHold: "තත්පර 7ක් හුස්ම තදකර තබාගන්න...", breathTextExhale: "පිටකරන්න", breathInstExhale: "තත්පර 8ක් පුරා හෙමින් හුස්ම පිටකරන්න...",
+            groundTitle: "5-4-3-2-1 Grounding Technique", groundSub: "Panic Attack එකක් හෝ අධික බියක් දැනෙන විට මනස වර්තමානයට ගෙන ඒමට මෙය භාවිතා කරන්න:",
+            groundList: [
+                "👀 <strong>5 - ඔබ අවට පෙනෙන දේවල් 5ක්</strong> දෙස අවධානයෙන් බලන්න.",
+                "✋ <strong>4 - ඔබට ඇල්ලිය හැකි දේවල් 4ක්</strong> අතගා බලන්න.",
+                "👂 <strong>3 - ඔබට ඇසෙන ශබ්ද 3කට</strong> සවන් දෙන්න.",
+                "👃 <strong>2 - ඔබට දැනෙන සුවඳ වර්ග 2ක්</strong> කෙරෙහි අවධානය යොමු කරන්න.",
+                "👅 <strong>1 - ඔබට දැනෙන රහක් 1ක්</strong> ගැන සිතන්න."
+            ],
+            groundClose: "තේරුණා / Close",
+            footer: "© 2026 Sansun Health. වෛද්‍ය වියාචනය: මෙම මෙවලම අධ්‍යාපනික අරමුණු සඳහා පමණක් වන අතර සායනික රෝග විනිශ්චයක් නොවේ.",
+            chatTitle: "සන්සුන් AI සහායක", chatPlaceholder: "ඔබේ පණිවිඩය ටයිප් කරන්න...",
+            botIntro: "ආයුබෝවන්! 👋 මම 'සන්සුන්' AI සහායක. ඔබට අද දැනෙන දේ හෝ සිතට වදදෙන ඕනෑම දෙයක් මා සමඟ බෙදාගන්න පුළුවන්. මා ඔබට උදවු කරන්නේ කෙසේද?",
+            directoryData: [
+                { district: "කොළඹ", hospital: "ජාතික මානසික සෞඛ්‍ය විද්‍යායතනය (NIMH), අංගොඩ", phone: "011 2578234" },
+                { district: "මහනුවර", hospital: "ශික්ෂණ රෝහල, පේරාදෙණිය (Mental Health Unit)", phone: "081 2388000" },
+                { district: "ගාල්ල", hospital: "කරාපිටිය ශික්ෂණ රෝහල", phone: "091 2232250" },
+                { district: "යාපනය", hospital: "ශික්ෂණ රෝහල, යාපනය", phone: "021 2222261" },
+                { district: "කුරුණෑගල", hospital: "ශික්ෂණ රෝහල, කුරුණෑගල", phone: "037 2222261" }
+            ],
+            phq9: ["1. වැඩ කටයුතු කෙරෙහි ඇති උනන්දුව අඩුවීම", "2. කනස්සල්ලෙන් හෝ බලාපොරොත්තු රහිතව පසුවීම", "3. නින්ද යෑමේ අපහසුව හෝ අධික ලෙස නිදාගැනීම", "4. අධික වෙහෙසකාරී බව දැනීම", "5. කෑම අරුචිය හෝ අධික ලෙස ආහාර ගැනීම", "6. තමා ගැන අප්‍රසාදයක් දැනීම", "7. අවධානය යොමු කිරීමේ අපහසුව", "8. අධික නොසන්සුන්කම හෝ මන්දගාමී බව", "9. තමාටම හානි කරගැනීමට සිතීම"],
+            gad7: ["1. නොසන්සුන්බව හෝ බියකරු බව", "2. කාංසාව පාලනය කරගැනීමට නොහැකි වීම", "3. විවිධ දේවල් ගැන අධික ලෙස වද වීම", "4. සැහැල්ලුවෙන් සිටීමට අපහසු වීම", "5. එක තැන සිටීමට නොහැකි තරම් නොසන්සුන් වීම", "6. ඉක්මනින් කෝප වීම", "7. නරක යමක් සිදුවනු ඇතැයි යන බිය"],
+            options: ["කොහෙත්ම නැත", "දින කිහිපයක්", "සතියකට වැඩි දින ගණනක්", "දිනපතාම වාගේ"]
+        },
+        en: {
+            brandName: "Sansun", navBreath: "Breathing", navAssessment: "Assessment", navMood: "Mood Journal", navCounseling: "Counseling", navHistory: "History", navDirectory: "Directory", navLogin: "Login", navLogout: "Logout",
+            heroTitle: "A Safe Space for Your Mental Well-being", heroDesc: "Identify stress and find tools to calm your mind effectively in daily life.", heroBtn: "Start Assessment",
+            moodTitle: "Daily Mood Journal", moodDesc: "Select how you are feeling today:", btnSaveMood: "Save Mood Entry", moodPlaceholder: "Write a short note about today (Optional)...", recentEntries: "Recent Entries:",
+            bannerTitle: "Need someone to talk to?", bannerDesc: "Connect with a qualified counselor or reach out to immediate support services confidentially.",
+            btnBookCounselor: "Book Counseling Session", btnCall1926: "Call 1926",
+            modalLoginHeader: "Login to Your Account", lblEmail: "Email Address", lblPassword: "Password", btnLoginSubmit: "Login", lblOr: "OR", lblGoogleLogin: "Sign in with Google",
+            modalCounselHeader: "Connect with a Counselor", lblPrivacy: "Privacy Option", optNamed: "Standard (Include Name & Student ID)", optAnon: "Anonymous Request",
+            lblName: "Full Name / Student ID", lblMode: "Preferred Session Mode", optOnline: "Online Chat / Video Call", optInPerson: "In-Person (Counseling Office)",
+            lblDate: "Preferred Date & Time", lblNotes: "Brief Note (Optional)", btnSubmitCounsel: "Submit Request", notesPlaceholder: "Share anything you'd like us to know...",
+            tabPhq: "PHQ-9 (Depression)", tabGad: "GAD-7 (Anxiety)", btnPrev: "Back", btnNext: "Next", btnReTest: "Retake Assessment", scoreTitle: "Score Result", emergencyWarn: "⚠️ Immediate support recommended.", completeMsg: "Assessment complete.",
+            chartTitle: "Your Progress (Past Scores)", chartLabel: "Score History", chartLocked: "🔒 Protected by PIN. Please unlock to view.", pinLockBtn: "PIN Lock", pinUnlockBtn: "Unlocked",
+            dirTitle: "District Mental Health Resource Directory", thDistrict: "District", thHospital: "Hospital / Unit", thContact: "Contact Number",
+            checkTitle: "Daily Self-Care Checklist", chk1: "10 minutes breathing exercise", chk2: "Drink 2 liters of water", chk3: "15 minutes outdoor walk", chk4: "7-8 hours sound sleep",
+            helpTitle: "Need Immediate Support?", helpDesc: "If you are experiencing severe distress, reach out to these free helplines anytime with full privacy.",
+            help1: "National Institute of Mental Health", help2: "CCC Line (24/7 Free)", help3: "Sri Lanka Sumithrayo",
+            breathModalSub: "Follow the instructions below to relax your mind.", closeBreathBtn: "Close", audioLabel: "Nature Ambient Sound:", btnWa: "WhatsApp Support",
+            breathTextReady: "Get Ready...", breathTextInhale: "Inhale", breathInstInhale: "Inhale deeply for 4 seconds...", breathTextHold: "Hold", breathInstHold: "Hold your breath for 7 seconds...", breathTextExhale: "Exhale", breathInstExhale: "Exhale slowly for 8 seconds...",
+            groundTitle: "5-4-3-2-1 Grounding Technique", groundSub: "Use this to bring your mind back to the present moment during high anxiety or panic:",
+            groundList: [
+                "👀 <strong>5 - Look at 5 things</strong> around you carefully.",
+                "✋ <strong>4 - Touch 4 things</strong> you can feel.",
+                "👂 <strong>3 - Listen to 3 distinct sounds</strong> around you.",
+                "👃 <strong>2 - Notice 2 scents or smells</strong> around you.",
+                "👅 <strong>1 - Focus on 1 taste</strong> in your mouth."
+            ],
+            groundClose: "Got it / Close",
+            footer: "© 2026 Sansun Health. Medical Disclaimer: This screening tool is for educational purposes only and not a clinical diagnosis.",
+            chatTitle: "Sansun AI Assistant", chatPlaceholder: "Type your message...",
+            botIntro: "Hello! 👋 I am the 'Sansun' AI Assistant. Feel free to share how you're feeling or whatever is on your mind. How can I help you today?",
+            directoryData: [
+                { district: "Colombo", hospital: "National Institute of Mental Health (NIMH), Angoda", phone: "011 2578234" },
+                { district: "Kandy", hospital: "Teaching Hospital, Peradeniya (Mental Health Unit)", phone: "081 2388000" },
+                { district: "Galle", hospital: "Karapitiya Teaching Hospital", phone: "091 2232250" },
+                { district: "Jaffna", hospital: "Teaching Hospital, Jaffna", phone: "021 2222261" },
+                { district: "Kurunegala", hospital: "Teaching Hospital, Kurunegala", phone: "037 2222261" }
+            ],
+            phq9: ["1. Little interest or pleasure in doing things", "2. Feeling down, depressed, or hopeless", "3. Trouble falling/staying asleep, or sleeping too much", "4. Feeling tired or having little energy", "5. Poor appetite or overeating", "6. Feeling bad about yourself", "7. Trouble concentrating on things", "8. Moving or speaking slowly, or being restless", "9. Thoughts of self-harm"],
+            gad7: ["1. Feeling nervous, anxious, or on edge", "2. Not being able to stop worrying", "3. Worrying too much about different things", "4. Trouble relaxing", "5. Being so restless that it's hard to sit still", "6. Becoming easily annoyed or irritable", "7. Feeling afraid as if something awful might happen"],
+            options: ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        }
+    };
+function openRegisterModal() {
+    closeLoginModal();
+    document.getElementById('registerModal').style.display = 'flex';
+}
+
+function closeRegisterModal() {
+    document.getElementById('registerModal').style.display = 'none';
+}
+
+function switchToLogin() {
+    closeRegisterModal();
+    openLoginModal();
+}
+
+function handleRegister(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('regFullname').value.trim();
+    const email = document.getElementById('regEmail').value.trim().toLowerCase();
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+    if (password !== confirmPassword) {
+        alert("ඇතුළත් කළ මුරපද දෙක ගැලපෙන්නේ නැත!");
+        return;
+    }
+
+    let userRole = email.includes('admin') ? 'admin' : 'user';
+
+    const newUser = {
+        name: name,
+        email: email,
+        role: userRole
+    };
+
+    // Save to LocalStorage
+    localStorage.setItem('sansun_user', JSON.stringify(newUser));
+
+    alert("ලියාපදිංචි වීම සාර්ථකයි!");
+    closeRegisterModal();
+    
+    // Redirect based on role
+    if (userRole === 'admin') {
+        window.location.href = "admin-dashboard.html";
+    } else {
+        window.location.href = "dashboard.html";
+    }
+}
+    /* ======================================================================
+       2. STATE MANAGEMENT
+       ====================================================================== */
+    let currentLang = 'si';
+    let currentTest = 'phq9';
+    let currentStep = 0;
+    let answers = {};
+    let isTestCompleted = false;
+    let lastCalculatedScore = null;
+    let selectedMoodVal = '';
+    let userPin = localStorage.getItem('sansun_pin') || null;
+    let isUnlocked = false;
+    let chartInstance = null;
+    let breathTimeoutIds = [];
+    let currentBreathPhase = 'ready';
+    let conversationHistory = [];
+    let currentUser = JSON.parse(localStorage.getItem('sansun_user')) || null;
+
+    /* ======================================================================
+       3. UI & LANGUAGE CONTROLLERS
+       ====================================================================== */
+    function toggleTheme() {
+        const body = document.body;
+        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? '' : 'dark');
+    }
+
+    function toggleLanguage() {
+        currentLang = (currentLang === 'si') ? 'en' : 'si';
+        document.getElementById('langTxt').innerText = (currentLang === 'si') ? 'English' : 'සිංහල';
+        const t = TRANSLATIONS[currentLang];
+
+        document.getElementById('brandName').innerText = t.brandName;
+        document.getElementById('navBreath').innerText = t.navBreath;
+        document.getElementById('navAssessment').innerText = t.navAssessment;
+        document.getElementById('navMood').innerText = t.navMood;
+        document.getElementById('navCounseling').innerText = t.navCounseling;
+        document.getElementById('navHistory').innerText = t.navHistory;
+        document.getElementById('navDirectory').innerText = t.navDirectory;
+
+        document.getElementById('heroTitle').innerText = t.heroTitle;
+        document.getElementById('heroDesc').innerText = t.heroDesc;
+        document.getElementById('heroBtn').innerText = t.heroBtn;
+
+        document.getElementById('moodTitle').innerText = t.moodTitle;
+        document.getElementById('moodDesc').innerText = t.moodDesc;
+        document.getElementById('btnSaveMood').innerText = t.btnSaveMood;
+        document.getElementById('moodNote').placeholder = t.moodPlaceholder;
+
+        document.getElementById('bannerTitle').innerText = t.bannerTitle;
+        document.getElementById('bannerDesc').innerText = t.bannerDesc;
+        document.getElementById('btnBookCounselor').innerText = t.btnBookCounselor;
+        document.getElementById('btnCall1926').innerText = t.btnCall1926;
+
+        document.getElementById('modalLoginHeader').innerText = t.modalLoginHeader;
+        document.getElementById('lblEmail').innerText = t.lblEmail;
+        document.getElementById('lblPassword').innerText = t.lblPassword;
+        document.getElementById('btnLoginSubmit').innerText = t.btnLoginSubmit;
+        document.getElementById('lblOr').innerText = t.lblOr;
+        document.getElementById('lblGoogleLogin').innerText = t.lblGoogleLogin;
+
+        document.getElementById('modalCounselHeader').innerText = t.modalCounselHeader;
+        document.getElementById('lblPrivacy').innerText = t.lblPrivacy;
+        document.getElementById('optNamed').innerText = t.optNamed;
+        document.getElementById('optAnon').innerText = t.optAnon;
+        document.getElementById('lblName').innerText = t.lblName;
+        document.getElementById('lblMode').innerText = t.lblMode;
+        document.getElementById('optOnline').innerText = t.optOnline;
+        document.getElementById('optInPerson').innerText = t.optInPerson;
+        document.getElementById('lblDate').innerText = t.lblDate;
+        document.getElementById('lblNotes').innerText = t.lblNotes;
+        document.getElementById('notes').placeholder = t.notesPlaceholder;
+        document.getElementById('btnSubmitCounsel').innerText = t.btnSubmitCounsel;
+
+        document.getElementById('tabPhq').innerText = t.tabPhq;
+        document.getElementById('tabGad').innerText = t.tabGad;
+        document.getElementById('prevBtn').innerText = t.btnPrev;
+        document.getElementById('nextBtn').innerText = t.btnNext;
+
+        document.getElementById('chartTitle').innerText = t.chartTitle;
+        document.getElementById('btnPinToggle').innerHTML = `<i class="fa-solid fa-${isUnlocked ? 'lock-open' : 'lock'}"></i> ${isUnlocked ? t.pinUnlockBtn : t.pinLockBtn}`;
+        document.getElementById('dirTitle').innerText = t.dirTitle;
+        document.getElementById('thDistrict').innerText = t.thDistrict;
+        document.getElementById('thHospital').innerText = t.thHospital;
+        document.getElementById('thContact').innerText = t.thContact;
+
+        document.getElementById('checkTitle').innerText = t.checkTitle;
+        document.getElementById('chk1').innerText = t.chk1;
+        document.getElementById('chk2').innerText = t.chk2;
+        document.getElementById('chk3').innerText = t.chk3;
+        document.getElementById('chk4').innerText = t.chk4;
+
+        document.getElementById('helpTitle').innerText = t.helpTitle;
+        document.getElementById('helpDesc').innerText = t.helpDesc;
+        document.getElementById('help1').innerText = t.help1;
+        document.getElementById('help2').innerText = t.help2;
+        document.getElementById('help3').innerText = t.help3;
+
+        document.getElementById('groundTitle').innerText = t.groundTitle;
+        document.getElementById('groundSub').innerText = t.groundSub;
+        document.getElementById('groundCloseBtn').innerText = t.groundClose;
+
+        document.getElementById('breathModalSub').innerText = t.breathModalSub;
+        document.getElementById('closeBreathBtn').innerText = t.closeBreathBtn;
+        document.getElementById('audioLabel').innerHTML = `<i class="fa-solid fa-music"></i> ${t.audioLabel}`;
+        document.getElementById('btnWa').innerText = t.btnWa;
+        document.getElementById('footerText').innerHTML = `<p>${t.footer}</p>`;
+
+        document.getElementById('chatTitle').innerText = t.chatTitle;
+        document.getElementById('chatInput').placeholder = t.chatPlaceholder;
+        document.getElementById('botIntroMsg').innerText = t.botIntro;
+
+        updateAuthUI();
+        renderGroundingList();
+        renderDirectoryTable();
+        renderMoodLogs();
+        updateChart();
+
+        if (isTestCompleted) {
+            renderResultUI();
+        } else {
+            renderCurrentStep();
+        }
+
+        updateBreathingUI(currentBreathPhase);
+    }
+
+    function toggleAudio() {
+        const audio = document.getElementById('ambientAudio');
+        const icon = document.getElementById('audioIcon');
+        if (audio.paused) { 
+            audio.play(); 
+            icon.className = "fa-solid fa-pause"; 
+        } else { 
+            audio.pause(); 
+            icon.className = "fa-solid fa-play"; 
+        }
+    }
+
+    /* ======================================================================
+       4. LOGIN & AUTHENTICATION MODULE
+       ====================================================================== */
+    function openLoginModal() {
+        if (currentUser) {
+            if (confirm(currentLang === 'si' ? "ඔබට ගිණුමෙන් ඉවත් වීමට (Logout) අවශ්‍යද?" : "Do you want to logout?")) {
+                localStorage.removeItem('sansun_user');
+                currentUser = null;
+                updateAuthUI();
+                alert(currentLang === 'si' ? "ඔබ සාර්ථකව ඉවත් විය." : "Logged out successfully.");
+            }
+        } else {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').style.display = 'none';
+    }
+
+    function updateAuthUI() {
+        const authBtn = document.getElementById('userAuthBtn');
+        const dashNav = document.getElementById('dashboardNavItem');
+        const t = TRANSLATIONS[currentLang];
+        
+        if (currentUser) {
+            authBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> <span>${currentUser.name || 'User'}</span>`;
+            if (dashNav) {
+                dashNav.style.display = 'inline-block';
+                const dashLink = document.getElementById('navDashboard');
+                dashLink.href = currentUser.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+                dashLink.innerText = currentUser.role === 'admin' ? 'Admin Dashboard' : 'Dashboard';
+            }
+        } else {
+            authBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> <span id="navLogin">${t.navLogin}</span>`;
+            if (dashNav) dashNav.style.display = 'none';
+        }
+    }
+
+    function handleLoginSubmit(event) {
+        event.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        
+        let userRole = 'user';
+        let targetPage = 'dashboard.html';
+
+        if (email.includes('admin')) {
+            userRole = 'admin';
+            targetPage = 'admin-dashboard.html';
+        }
+
+        const user = {
+            name: email.split('@')[0],
+            email: email,
+            role: userRole
+        };
+        
+        localStorage.setItem('sansun_user', JSON.stringify(user));
+        window.location.href = targetPage;
+    }
+
+    function handleGoogleLogin() {
+        const user = {
+            name: "Google User",
+            email: "user@gmail.com",
+            role: "user"
+        };
+        localStorage.setItem('sansun_user', JSON.stringify(user));
+        window.location.href = "dashboard.html";
+    }
+
+    
+    /* ======================================================================
+       5. MOOD JOURNAL MODULE
+       ====================================================================== */
+    function selectMood(emoji, element) {
+        selectedMoodVal = emoji;
+        document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+        if (element) element.classList.add('selected');
+    }
+
+    function saveMoodEntry() {
+        if (!selectedMoodVal) {
+            alert(currentLang === 'si' ? "කරුණාකර ප්‍රථමයෙන් මනෝභාවයක් තෝරන්න." : "Please select a mood first.");
+            return;
+        }
+
+        const note = document.getElementById('moodNote').value;
+        const moodLogs = JSON.parse(localStorage.getItem('sansun_mood_logs') || '[]');
+        
+        moodLogs.unshift({
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            mood: selectedMoodVal,
+            note: note
+        });
+
+        localStorage.setItem('sansun_mood_logs', JSON.stringify(moodLogs.slice(0, 10)));
+        document.getElementById('moodNote').value = '';
+        selectedMoodVal = '';
+        document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+
+        alert(currentLang === 'si' ? "ඔබේ මනෝභාවය සටහන් කරගන්නා ලදී!" : "Mood entry saved successfully!");
+        renderMoodLogs();
+    }
+
+    function renderMoodLogs() {
+        const moodLogs = JSON.parse(localStorage.getItem('sansun_mood_logs') || '[]');
+        const container = document.getElementById('moodLogList');
+        const t = TRANSLATIONS[currentLang];
+
+        if (moodLogs.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let html = `<strong>${t.recentEntries}</strong><ul style="list-style:none; margin-top:8px;">`;
+        moodLogs.forEach(item => {
+            html += `<li style="padding:6px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+                <span>${item.mood} <strong>${item.date} (${item.time})</strong>: ${item.note || '-'}</span>
+            </li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+    }
+
+    /* ======================================================================
+       6. COUNSELING & APPOINTMENT MODULE
+       ====================================================================== */
+    function openCounselingModal() {
+        document.getElementById('counselingModal').style.display = 'flex';
+    }
+
+    function closeCounselingModal() {
+        document.getElementById('counselingModal').style.display = 'none';
+    }
+
+    function toggleNameFields() {
+        const reqType = document.getElementById('requestType').value;
+        const nameGroup = document.getElementById('studentDetailsGroup');
+        if (reqType === 'anonymous') {
+            nameGroup.style.display = 'none';
+        } else {
+            nameGroup.style.display = 'block';
+        }
+    }
+
+    function handleCounselingSubmit(event) {
+        event.preventDefault();
+        alert(currentLang === 'si' 
+            ? "ඔබගේ උපදේශන ඉල්ලීම සාර්ථකව යොමු කරන ලදී. කෙටි වේලාවකින් අපගේ නිලධාරියෙකු ඔබ හා සම්බන්ධ වනු ඇත." 
+            : "Your counseling request has been submitted successfully. A representative will contact you shortly.");
+
+        closeCounselingModal();
+        document.getElementById('counselingForm').reset();
+    }
+
+    /* ======================================================================
+       7. ASSESSMENT WIZARD MODULE (PHQ-9 & GAD-7)
+       ====================================================================== */
+    function switchTest(testType) {
+        currentTest = testType;
+        currentStep = 0;
+        answers = {};
+        isTestCompleted = false;
+
+        document.getElementById('tabPhq').classList.toggle('active', testType === 'phq9');
+        document.getElementById('tabGad').classList.toggle('active', testType === 'gad7');
+
+        document.getElementById('wizardForm').style.display = 'block';
+        document.getElementById('result').style.display = 'none';
+
+        renderCurrentStep();
+    }
+
+    function renderCurrentStep() {
+        const questions = TRANSLATIONS[currentLang][currentTest];
+        const options = TRANSLATIONS[currentLang].options;
+        const container = document.getElementById('questionsContainer');
+
+        const progressPercent = ((currentStep + 1) / questions.length) * 100;
+        document.getElementById('progressFill').style.width = `${progressPercent}%`;
+
+        let html = `<div class="question-block">
+            <h3 style="font-size:1rem; color:var(--text-main); margin-bottom:12px;">${questions[currentStep]}</h3>
+            <div class="options-group">`;
+
+        options.forEach((optText, index) => {
+            const isChecked = answers[currentStep] === index ? 'checked' : '';
+            html += `<label>
+                <input type="radio" name="step_${currentStep}" value="${index}" ${isChecked} onchange="saveStepAnswer(${index})">
+                <span class="option-btn">${optText}</span>
+            </label>`;
+        });
+
+        html += `</div></div>`;
+        container.innerHTML = html;
+
+        document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : 'block';
+        document.getElementById('nextBtn').innerText = currentStep === questions.length - 1 
+            ? (currentLang === 'si' ? 'අවසානයි' : 'Finish') 
+            : TRANSLATIONS[currentLang].btnNext;
+    }
+
+    function saveStepAnswer(val) {
+        answers[currentStep] = val;
+    }
+
+    function navigateStep(direction) {
+        const questions = TRANSLATIONS[currentLang][currentTest];
+
+        if (direction === 1 && answers[currentStep] === undefined) {
+            alert(currentLang === 'si' ? "කරුණාකර පිළිතුරක් තෝරන්න." : "Please select an option.");
+            return;
+        }
+
+        currentStep += direction;
+
+        if (currentStep >= questions.length) {
+            calculateAssessmentScore();
+        } else {
+            renderCurrentStep();
+        }
+    }
+
+    function calculateAssessmentScore() {
+        let totalScore = 0;
+        Object.keys(answers).forEach(key => {
+            totalScore += answers[key];
+        });
+
+        lastCalculatedScore = totalScore;
+        isTestCompleted = true;
+
+        const history = JSON.parse(localStorage.getItem('sansun_history') || '[]');
+        history.push({
+            date: new Date().toLocaleDateString(),
+            type: currentTest.toUpperCase(),
+            score: totalScore
+        });
+        localStorage.setItem('sansun_history', JSON.stringify(history));
+
+        renderResultUI();
+        updateChart();
+    }
+
+    function renderResultUI() {
+        document.getElementById('wizardForm').style.display = 'none';
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+
+        const t = TRANSLATIONS[currentLang];
+        let severity = '';
+        let color = 'var(--primary)';
+
+        if (currentTest === 'phq9') {
+            if (lastCalculatedScore >= 20) { severity = "Severe Depression"; color = "var(--danger)"; }
+            else if (lastCalculatedScore >= 15) { severity = "Moderately Severe Depression"; color = "#e67e22"; }
+            else if (lastCalculatedScore >= 10) { severity = "Moderate Depression"; color = "#f39c12"; }
+            else if (lastCalculatedScore >= 5) { severity = "Mild Depression"; color = "#27ae60"; }
+            else { severity = "Minimal Depression"; color = "var(--primary)"; }
+        } else {
+            if (lastCalculatedScore >= 15) { severity = "Severe Anxiety"; color = "var(--danger)"; }
+            else if (lastCalculatedScore >= 10) { severity = "Moderate Anxiety"; color = "#f39c12"; }
+            else if (lastCalculatedScore >= 5) { severity = "Mild Anxiety"; color = "#27ae60"; }
+            else { severity = "Minimal Anxiety"; color = "var(--primary)"; }
+        }
+
+        resultDiv.innerHTML = `
+            <i class="fa-solid fa-square-poll-vertical" style="font-size:3rem; color:${color}; margin-bottom:10px;"></i>
+            <h3>${t.completeMsg}</h3>
+            <p style="margin:10px 0; font-size:1.1rem;">${t.scoreTitle}: <strong style="color:${color}">${lastCalculatedScore}</strong> (${severity})</p>
+            ${lastCalculatedScore >= 10 ? `<p style="color:var(--danger); font-weight:600; margin-bottom:15px;">${t.emergencyWarn}</p>` : ''}
+            <button class="btn-action" onclick="switchTest('${currentTest}')">${t.btnReTest}</button>
+        `;
+    }
+
+    /* ======================================================================
+       8. PROGRESS CHART & PIN PROTECTION
+       ====================================================================== */
+    function togglePinProtection() {
+        if (!userPin) {
+            const newPin = prompt(currentLang === 'si' ? "නව PIN අංකයක් ඇතුළත් කරන්න (ඉලක්කම් 4ක්):" : "Set a new 4-digit PIN:");
+            if (newPin && newPin.length === 4) {
+                userPin = newPin;
+                localStorage.setItem('sansun_pin', newPin);
+                alert(currentLang === 'si' ? "PIN අංකය සාර්ථකව සකසන ලදී." : "PIN set successfully.");
+                isUnlocked = true;
+            } else {
+                alert(currentLang === 'si' ? "අවලංගු PIN අංකයකි." : "Invalid PIN.");
+                return;
+            }
+        } else if (!isUnlocked) {
+            const entered = prompt(currentLang === 'si' ? "ඔබගේ PIN අංකය ඇතුළත් කරන්න:" : "Enter your PIN:");
+            if (entered === userPin) {
+                isUnlocked = true;
+            } else {
+                alert(currentLang === 'si' ? "වැරදි PIN අංකයකි." : "Incorrect PIN.");
+                return;
+            }
+        } else {
+            isUnlocked = false;
+        }
+
+        const t = TRANSLATIONS[currentLang];
+        document.getElementById('btnPinToggle').innerHTML = `<i class="fa-solid fa-${isUnlocked ? 'lock-open' : 'lock'}"></i> ${isUnlocked ? t.pinUnlockBtn : t.pinLockBtn}`;
+        updateChart();
+    }
+
+    function updateChart() {
+        const historyContainer = document.getElementById('protectedHistoryContent');
+        const t = TRANSLATIONS[currentLang];
+
+        if (userPin && !isUnlocked) {
+            historyContainer.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-lock" style="font-size:2rem; margin-bottom:10px;"></i><p>${t.chartLocked}</p></div>`;
+            return;
+        }
+
+        historyContainer.innerHTML = `<canvas id="historyChart"></canvas>`;
+        const history = JSON.parse(localStorage.getItem('sansun_history') || '[]');
+
+        const ctx = document.getElementById('historyChart').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+
+        const labels = history.slice(-7).map(item => `${item.date} (${item.type})`);
+        const dataScores = history.slice(-7).map(item => item.score);
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['No Data'],
+                datasets: [{
+                    label: t.chartLabel,
+                    data: dataScores.length ? dataScores : [0],
+                    borderColor: '#4a7c59',
+                    backgroundColor: 'rgba(74, 124, 89, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, max: 27 }
+                }
+            }
+        });
+    }
+
+    /* ======================================================================
+       9. RESOURCE DIRECTORY MODULE
+       ====================================================================== */
+    function renderDirectoryTable() {
+        const tbody = document.getElementById('directoryBody');
+        const data = TRANSLATIONS[currentLang].directoryData;
+
+        let html = '';
+        data.forEach(item => {
+            html += `<tr>
+                <td><strong>${item.district}</strong></td>
+                <td>${item.hospital}</td>
+                <td><a href="tel:${item.phone}" style="color:var(--primary); font-weight:bold; text-decoration:none;"><i class="fa-solid fa-phone"></i> ${item.phone}</a></td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+
+    /* ======================================================================
+       10. BREATHING EXERCISE MODULE (4-7-8)
+       ====================================================================== */
+    function openBreathingModal() {
+        document.getElementById('breathModal').style.display = 'flex';
+        startBreathingCycle();
+    }
+
+    function closeBreathingModal() {
+        document.getElementById('breathModal').style.display = 'none';
+        clearBreathTimeouts();
+    }
+
+    function clearBreathTimeouts() {
+        breathTimeoutIds.forEach(id => clearTimeout(id));
+        breathTimeoutIds = [];
+    }
+
+    function startBreathingCycle() {
+        clearBreathTimeouts();
+        runPhase('inhale');
+    }
+
+    function runPhase(phase) {
+        currentBreathPhase = phase;
+        updateBreathingUI(phase);
+
+        if (phase === 'inhale') {
+            const t1 = setTimeout(() => runPhase('hold'), 4000);
+            breathTimeoutIds.push(t1);
+        } else if (phase === 'hold') {
+            const t2 = setTimeout(() => runPhase('exhale'), 7000);
+            breathTimeoutIds.push(t2);
+        } else if (phase === 'exhale') {
+            const t3 = setTimeout(() => runPhase('inhale'), 8000);
+            breathTimeoutIds.push(t3);
+        }
+    }
+
+    function updateBreathingUI(phase) {
+        const circle = document.getElementById('breathCircle');
+        const inst = document.getElementById('breathInstruction');
+        const t = TRANSLATIONS[currentLang];
+
+        if (!circle || !inst) return;
+
+        circle.className = 'breath-circle';
+
+        if (phase === 'inhale') {
+            circle.innerText = t.breathTextInhale;
+            inst.innerText = t.breathInstInhale;
+            circle.classList.add('expand');
+        } else if (phase === 'hold') {
+            circle.innerText = t.breathTextHold;
+            inst.innerText = t.breathInstHold;
+            circle.classList.add('hold');
+        } else if (phase === 'exhale') {
+            circle.innerText = t.breathTextExhale;
+            inst.innerText = t.breathInstExhale;
+            circle.classList.add('shrink');
+        } else {
+            circle.innerText = t.breathTextReady;
+            inst.innerText = '';
+        }
+    }
+
+    /* ======================================================================
+       11. GROUNDING EXERCISE MODULE
+       ====================================================================== */
+    function openGroundingModal() {
+        renderGroundingList();
+        document.getElementById('groundingModal').style.display = 'flex';
+    }
+
+    function closeGroundingModal() {
+        document.getElementById('groundingModal').style.display = 'none';
+    }
+
+    function renderGroundingList() {
+        const list = document.getElementById('groundList');
+        const items = TRANSLATIONS[currentLang].groundList;
+
+        let html = '';
+        items.forEach(item => {
+            html += `<li>${item}</li>`;
+        });
+        list.innerHTML = html;
+    }
+
+    /* ======================================================================
+       12. GEMINI AI CHATBOT INTEGRATION
+       ====================================================================== */
+    function toggleChatbot() {
+        const chatWin = document.getElementById('chatbotWindow');
+        chatWin.style.display = (chatWin.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function handleChatKeyPress(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function sendQuickChip(text) {
+        document.getElementById('chatInput').value = text;
+        sendChatMessage();
+    }
+
+    async function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendChatMessage('user', text);
+        input.value = '';
+
+        conversationHistory.push({ role: 'user', content: text });
+
+        const loadingMsgId = appendChatMessage('bot', 'සිතමින් පවතියි... / Thinking...');
+
+        try {
+            const response = await fetch(APP_CONFIG.apiEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: text,
+                    history: conversationHistory,
+                    language: currentLang
+                })
+            });
+
+            const data = await response.json();
+            const botReply = data.reply || (currentLang === 'si' ? 'කනගාටුයි, පිළිතුර ලබාගැනීමට නොහැකි විය.' : 'Sorry, could not fetch response.');
+
+            document.getElementById(loadingMsgId).innerText = botReply;
+            conversationHistory.push({ role: 'assistant', content: botReply });
+        } catch (err) {
+            document.getElementById(loadingMsgId).innerText = currentLang === 'si' 
+                ? 'සම්බන්ධතාවයේ දෝෂයක් පවතියි. කරුණාකර නැවත උත්සාහ කරන්න.' 
+                : 'Connection error. Please try again.';
+        }
+    }
+
+    function appendChatMessage(sender, text) {
+        const chatBody = document.getElementById('chatBody');
+        const msgDiv = document.createElement('div');
+        const msgId = 'msg_' + Date.now();
+        msgDiv.id = msgId;
+        msgDiv.className = `chat-msg ${sender}`;
+        msgDiv.innerText = text;
+        chatBody.appendChild(msgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        return msgId;
+    }
+
+    /* ======================================================================
+       13. INITIALIZATION ON PAGE LOAD
+       ====================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+        renderDirectoryTable();
+        renderGroundingList();
+        renderMoodLogs();
+        renderCurrentStep();
+        updateAuthUI();
+        updateChart();
+    });
+</script>
+
+</body>
+</html>
