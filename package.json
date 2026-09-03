@@ -1,0 +1,13 @@
+{
+  "name": "sansun-app",
+  "version": "1.0.0",
+  "main": "api/index.js",
+  "dependencies": {
+    "@google/genai": "latest",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
