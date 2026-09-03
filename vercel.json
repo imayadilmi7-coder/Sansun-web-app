@@ -4,10 +4,6 @@
     {
       "src": "Backend/api/index.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "Frontend/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,8 +12,11 @@
       "dest": "Backend/api/index.js"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "Frontend/$1"
+      "dest": "/Frontend/$1"
     }
   ]
 }
