@@ -22,7 +22,7 @@ app.post('/api/chat', async (req, res) => {
             : "You are 'Sansun', a mental health assistant AI.";
 
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-1.5-flash',
             contents: `${systemPrompt}\n\nUser Message: ${message}`
         });
 
