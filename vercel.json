@@ -3,24 +3,17 @@
   "builds": [
     {
       "src": "Backend/api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["Backend/node_modules/@google/genai/**"]
-      }
-    },
-    {
-      "src": "Frontend/**",
-      "use": "@vercel/static"
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "Backend/api/index.js"
+      "dest": "/Backend/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "Frontend/$1"
+      "dest": "/Frontend/$1"
     }
   ]
 }
