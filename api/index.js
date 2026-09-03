@@ -7,14 +7,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API Route
 app.post('/api/chat', async (req, res) => {
     try {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             return res.status(500).json({ reply: "GEMINI_API_KEY එක Vercel Settings වල සකසා නැත!" });
         }
-        
+
         const ai = new GoogleGenAI({ apiKey });
         const { message, language } = req.body;
 
@@ -37,5 +36,4 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
-// Export default app for Vercel Serverless
 module.exports = app;
