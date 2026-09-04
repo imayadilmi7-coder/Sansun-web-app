@@ -7,30 +7,64 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         :root {
             --main-bg: #f8fafc;
+            --card-bg: #ffffff;
             --primary: #4a7c59;
             --primary-light: #eef4f0;
             --text-dark: #1e293b;
             --text-muted: #64748b;
+            --border-color: #f1f5f9;
+            --input-border: #cbd5e1;
             --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body.dark-mode {
+            --main-bg: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #529465;
+            --primary-light: #1b2e24;
+            --text-dark: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-border: #475569;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
         body { background-color: var(--main-bg); color: var(--text-dark); }
 
         .navbar { 
-            background: #ffffff; 
+            background: var(--card-bg); 
             padding: 1.2rem 2.5rem; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+            border-bottom: 1px solid var(--border-color);
         }
         .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; text-decoration: none; }
         .user-nav-profile { display: flex; align-items: center; gap: 14px; }
         .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+        .theme-btn, .lang-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
         .container { max-width: 1200px; margin: 2.5rem auto; padding: 0 1.5rem; }
         
@@ -41,22 +75,27 @@
             padding: 2.5rem; 
             margin-bottom: 2rem; 
             box-shadow: 0 15px 30px rgba(74, 124, 89, 0.25); 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .welcome-card h2 { font-size: 1.8rem; font-weight: 700; }
         .welcome-card p { opacity: 0.9; margin-top: 6px; font-size: 0.95rem; }
 
         .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .dashboard-grid { grid-template-columns: 1fr; }
+            .welcome-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
         }
 
         .card { 
-            background: #ffffff; 
+            background: var(--card-bg); 
             border-radius: 18px; 
             padding: 1.8rem; 
             box-shadow: var(--card-shadow); 
             margin-bottom: 2rem; 
+            border: 1px solid var(--border-color);
         }
         .card-header { 
             font-size: 1.1rem; 
@@ -66,7 +105,7 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 1px solid #f1f5f9; 
+            border-bottom: 1px solid var(--border-color); 
             padding-bottom: 0.8rem; 
         }
 
@@ -79,13 +118,13 @@
         .form-group input, .form-group select { 
             width: 100%; 
             padding: 10px 14px; 
-            border: 1px solid #cbd5e1; 
+            background: var(--main-bg);
+            color: var(--text-dark);
+            border: 1px solid var(--input-border); 
             border-radius: 10px; 
             font-size: 0.9rem; 
             outline: none;
-            transition: 0.2s ease;
         }
-        .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
 
         .btn-submit { 
             background: var(--primary); 
@@ -97,9 +136,20 @@
             cursor: pointer; 
             width: 100%;
             font-size: 0.9rem;
-            transition: 0.2s ease;
         }
-        .btn-submit:hover { background: #3b6346; }
+
+        .btn-pdf {
+            background: #ffffff;
+            color: #4a7c59;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
         .event-card { 
             background: var(--primary-light); 
@@ -110,13 +160,98 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            transition: transform 0.2s ease;
         }
 
         .badge { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
         .badge.Approved { background: #dcfce7; color: #15803d; }
         .badge.Pending { background: #fff7ed; color: #c2410c; }
         .badge.Rejected { background: #fef2f2; color: #b91c1c; }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .goal-item label { font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        
+        .streak-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--primary-light);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .feed-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: var(--main-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-dark);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .content-card {
+            background: var(--main-bg);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-info { flex: 1; }
+        .content-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .affirmation-box {
+            background: linear-gradient(135deg, #eef4f0, #e2ece5);
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        body.dark-mode .affirmation-box {
+            background: linear-gradient(135deg, #1b2e24, #15241c);
+        }
 
         .btn-logout { 
             background: #fee2e2; 
@@ -131,86 +266,349 @@
             align-items: center;
             gap: 6px;
         }
-        .btn-logout:hover { background: #fca5a5; }
+
+        /* Modal Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+       .modal-content {
+    background: var(--card-bg);
+    color: var(--text-dark);
+    padding: 2.5rem;
+    border-radius: 20px;
+    max-width: 750px; /* Modal එක විශාල කළා */
+    width: 92%;
+    position: relative;
+    box-shadow: var(--card-shadow);
+}
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .breathing-circle {
+            width: 100px;
+            height: 100px;
+            background: var(--primary-light);
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary);
+            animation: breathe 8s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="index.html" class="logo"><i class="fa-solid fa-heart-pulse"></i> සන්සුන් Dashboard</a>
+        <a href="index.html" class="logo"><i class="fa-solid fa-heart-pulse"></i> <span data-i18n="brand">සන්සුන් Dashboard</span></a>
+        
         <div class="user-nav-profile">
+            <div class="nav-actions">
+                <button class="theme-btn" onclick="toggleDarkMode()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+                <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+            </div>
             <div class="avatar" id="userAvatar">U</div>
-            <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">Logout</span></button>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container" id="reportArea">
         <div class="welcome-card">
-            <h2 id="welcomeText">ආයුබෝවන්! 👋</h2>
-            <p>ඔබේ මානසික සුවතාවයේ ඉදිරි වැඩසටහන් සහ සටහන් මෙතැනින් බලන්න.</p>
+            <div>
+                <h2 id="welcomeText">ආයුබෝවන්! 👋</h2>
+                <p data-i18n="welcomeSub">ඔබේ මානසික සුවතාවයේ ඉදිරි වැඩසටහන් සහ වාර්තා මෙතැනින් බලන්න.</p>
+            </div>
+            <button class="btn-pdf" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="pdfBtn">PDF වාර්තාව Download කරන්න</span></button>
         </div>
 
         <div class="dashboard-grid">
+            <!-- Left Column -->
             <div>
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fa-regular fa-id-card"></i> Profile</span>
+                        <span><i class="fa-regular fa-id-card"></i> <span data-i18n="profile">Profile</span></span>
                     </div>
                     <div class="info-group">
-                        <div class="info-label">නම</div>
+                        <div class="info-label" data-i18n="nameLabel">නම</div>
                         <div class="info-val" id="profileName">User</div>
                     </div>
                     <div class="info-group">
-                        <div class="info-label">ඊමේල්</div>
+                        <div class="info-label" data-i18n="emailLabel">ඊමේල්</div>
                         <div class="info-val" id="profileEmail">user@example.com</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fa-regular fa-calendar-plus"></i> Session එකක් Book කරන්න</span>
+                        <span><i class="fa-solid fa-bullseye"></i> <span data-i18n="goalsTitle">පුද්ගලික ඉලක්ක (Personal Goals)</span></span>
                     </div>
-                    <form id="bookingForm" onsubmit="handleBooking(event)">
-                        <div class="form-group">
-                            <label>උපදේශන වර්ගය</label>
-                            <select id="sessionType" required>
-                                <option value="මානසික සහන සාකච්ඡාව">මානසික සහන සාකච්ඡාව</option>
-                                <option value="Personal Counseling">Personal Counseling</option>
-                            </select>
+                    <div class="streak-box">
+                        <i class="fa-solid fa-fire fa-2x" style="color: #e11d48;"></i>
+                        <div>
+                            <strong id="streakDays" data-i18n="streakCount">5 Days Streak!</strong>
+                            <p style="font-size:0.8rem; color:var(--text-muted);" data-i18n="streakSub">දිනපතා සුවතා ඉලක්ක සාර්ථකව සම්පූර්ණ කර ඇත.</p>
                         </div>
-                        <div class="form-group">
-                            <label>දිනය</label>
-                            <input type="date" id="sessionDate" required>
+                    </div>
+                    <div id="goalsList">
+                        <div class="goal-item">
+                            <label><input type="checkbox" checked onchange="toggleGoal(this)"> <span data-i18n="goal1">දිනපතා විනාඩි 10ක් ධ්‍යානය</span></label>
+                            <span class="badge Approved" data-i18n="done">තැබුවා</span>
                         </div>
-                        <div class="form-group">
-                            <label>වේලාව</label>
-                            <input type="time" id="sessionTime" required>
+                        <div class="goal-item">
+                            <label><input type="checkbox" onchange="toggleGoal(this)"> <span data-i18n="goal2">පැය 8ක් නිදාගැනීම</span></label>
+                            <span class="badge Pending" data-i18n="notDone">තවම නැත</span>
                         </div>
-                        <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> ඉල්ලීම යොමු කරන්න</button>
-                    </form>
+                        <div class="goal-item">
+                            <label><input type="checkbox" checked onchange="toggleGoal(this)"> <span data-i18n="goal3">වතුර ලීටර් 2ක් පානය</span></label>
+                            <span class="badge Approved" data-i18n="done">තැබුවා</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fa-solid fa-user-shield"></i> <span data-i18n="settingsTitle">රහස්‍යතා & සැකසුම්</span></span>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="pinLabel">PIN Security ලොක් කරන්න</label>
+                        <input type="password" data-i18n-placeholder="pinHolder" placeholder="නව PIN අංකය ඇතුළත් කරන්න" maxlength="4">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="reminderLabel">Daily Mood Reminder වේලාව</label>
+                        <input type="time" value="20:00">
+                    </div>
+                    <button class="btn-submit" style="background:#64748b;" onclick="alert('Settings Saved!')" data-i18n="saveBtn">Save Settings</button>
                 </div>
             </div>
 
+            <!-- Right Column -->
             <div>
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fa-regular fa-calendar-check"></i> ඔබගේ Session ඉල්ලීම් (My Sessions)</span>
+                        <span><i class="fa-solid fa-chart-line"></i> <span data-i18n="chartTitle">මානසික තත්ත්ව ප්‍රස්ථාරය</span></span>
+                        <select id="timeFilter" style="width: auto; padding: 4px 8px;" onchange="updateChart()">
+                            <option value="weekly" data-i18n="weekly">සතිපතා</option>
+                            <option value="monthly" data-i18n="monthly">මාසිකව</option>
+                        </select>
                     </div>
-                    <div id="eventsContainer">
-                        <!-- Dynamic Sessions will load here -->
+                    <canvas id="moodChart" style="max-height: 220px;"></canvas>
+                    <div style="margin-top: 15px; padding: 12px; background: var(--primary-light); border-radius: 10px; font-size:0.88rem;">
+                        <strong style="color:var(--primary);"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Insight:</strong> 
+                        <span id="aiInsightText" data-i18n="insightText">ඔබ සති අන්තයේදී වැඩිපුර සතුටින් හා සන්සුන්ව සිටී. සතිය මැදදී ආතතිය තරමක් ඉහළ ගොස් ඇත.</span>
                     </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fa-solid fa-compass"></i> <span data-i18n="feedTitle">ඔබ වෙනුවෙන්ම වෙන්වූ අන්තර්ගත</span></span>
+                    </div>
+                    
+                    <div class="affirmation-box">
+                        <i class="fa-solid fa-quote-left" style="color:var(--primary); margin-right:6px;"></i>
+                        <span id="dailyAffirmation">"සෑම දිනකම අලුත් ආරම්භයකි. ඔබේ සන්සුන් භාවය ඔබේ බලයයි."</span>
+                    </div>
+
+                    <div class="feed-filters">
+                        <button class="filter-btn active" onclick="filterFeed('all', this)" data-i18n="catAll">සියල්ල</button>
+                        <button class="filter-btn" onclick="filterFeed('audio', this)" data-i18n="catAudio">Guided Audio</button>
+                        <button class="filter-btn" onclick="filterFeed('music', this)" data-i18n="catMusic">Relaxing Music</button>
+                        <button class="filter-btn" onclick="filterFeed('article', this)" data-i18n="catArticle">Articles</button>
+                    </div>
+
+                    <div id="personalizedFeed">
+                        <div class="content-card" data-category="audio">
+                            <div class="content-info">
+                                <strong style="font-size:0.9rem; color:var(--primary);"><i class="fa-solid fa-lungs"></i> <span data-i18n="feed1Title">4-7-8 Breathing Exercise</span></strong>
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:3px;" data-i18n="feed1Sub">ආතතිය අවම කරගැනීමට තත්පර 30ක ශ්වසන ව්‍යායාමයෙහි යෙදෙන්න.</p>
+                            </div>
+                            <button class="content-btn" onclick="openContent('breathing')"><i class="fa-solid fa-play"></i> Start</button>
+                        </div>
+
+                        <div class="content-card" data-category="music">
+                            <div class="content-info">
+                                <strong style="font-size:0.9rem; color:var(--primary);"><i class="fa-solid fa-cloud-rain"></i> <span data-i18n="feed2Title">Calming Rain & Ocean Sounds</span></strong>
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:3px;" data-i18n="feed2Sub">මනස සන්සුන් කරවන ස්වාභාවික පරිසර ශබ්දවලට සවන්දෙන්න.</p>
+                            </div>
+                            <button class="content-btn" onclick="openContent('music')"><i class="fa-solid fa-headphones"></i> Listen</button>
+                        </div>
+
+                        <div class="content-card" data-category="article">
+                            <div class="content-info">
+                                <strong style="font-size:0.9rem; color:var(--primary);"><i class="fa-solid fa-book-open"></i> <span data-i18n="feed3Title">මානසික ආතතියෙන් මිදී සහනයෙන් ජීවත් වෙමු</span></strong>
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:3px;" data-i18n="feed3Sub">සෘණාත්මක සිතුවිලි ධනාත්මකව වෙනස් කරගන්නා ආකාරය පිළිබඳ කෙටි ලිපිය.</p>
+                            </div>
+                            <button class="content-btn" onclick="openContent('article')"><i class="fa-solid fa-newspaper"></i> Read</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fa-regular fa-calendar-plus"></i> <span data-i18n="bookTitle">Session එකක් Book කරන්න</span></span>
+                    </div>
+                    <form id="bookingForm" onsubmit="handleBooking(event)">
+                        <div class="form-group">
+                            <label data-i18n="sessionTypeLabel">උපදේශන වර්ගය</label>
+                            <select id="sessionType" required>
+                                <option value="මානසික සහන සාකච්ඡාව" data-i18n="opt1">මානසික සහන සාකච්ඡාව</option>
+                                <option value="Personal Counseling" data-i18n="opt2">Personal Counseling</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <div class="form-group" style="flex:1;">
+                                <label data-i18n="dateLabel">දිනය</label>
+                                <input type="date" id="sessionDate" required>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label data-i18n="timeLabel">වේලාව</label>
+                                <input type="time" id="sessionTime" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="submitBtn">ඉල්ලීම යොමු කරන්න</span></button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fa-regular fa-calendar-check"></i> <span data-i18n="mySessionsTitle">ඔබගේ Session ඉල්ලීම් (My Sessions)</span></span>
+                    </div>
+                    <div id="eventsContainer"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- CONTENT DISPLAY MODAL -->
+    <div id="contentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeContent()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
     <script>
         let currentUser = null;
+        let moodChartInstance = null;
+        let currentLang = 'si';
+
+        const i18nData = {
+            si: {
+                brand: "සන්සුන් Dashboard",
+                logout: "Logout",
+                welcomeSub: "ඔබේ මානසික සුවතාවයේ ඉදිරි වැඩසටහන් සහ වාර්තා මෙතැනින් බලන්න.",
+                pdfBtn: "PDF වාර්තාව Download කරන්න",
+                profile: "Profile",
+                nameLabel: "නම",
+                emailLabel: "ඊමේල්",
+                goalsTitle: "පුද්ගලික ඉලක්ක (Personal Goals)",
+                streakCount: "5 Days Streak!",
+                streakSub: "දිනපතා සුවතා ඉලක්ක සාර්ථකව සම්පූර්ණ කර ඇත.",
+                goal1: "දිනපතා විනාඩි 10ක් ධ්‍යානය",
+                goal2: "පැය 8ක් නිදාගැනීම",
+                goal3: "වතුර ලීටර් 2ක් පානය",
+                done: "තැබුවා",
+                notDone: "තවම නැත",
+                settingsTitle: "රහස්‍යතා & සැකසුම්",
+                pinLabel: "PIN Security ලොක් කරන්න",
+                pinHolder: "නව PIN අංකය ඇතුළත් කරන්න",
+                reminderLabel: "Daily Mood Reminder වේලාව",
+                saveBtn: "Save Settings",
+                chartTitle: "මානසික තත්ත්ව ප්‍රස්ථාරය",
+                weekly: "සතිපතා",
+                monthly: "මාසිකව",
+                insightText: "ඔබ සති අන්තයේදී වැඩිපුර සතුටින් හා සන්සුන්ව සිටී. සතිය මැදදී ආතතිය තරමක් ඉහළ ගොස් ඇත.",
+                feedTitle: "ඔබ වෙනුවෙන්ම වෙන්වූ අන්තර්ගත",
+                catAll: "සියල්ල",
+                catAudio: "Guided Audio",
+                catMusic: "Relaxing Music",
+                catArticle: "Articles",
+                feed1Title: "4-7-8 Breathing Exercise",
+                feed1Sub: "ආතතිය අවම කරගැනීමට තත්පර 30ක ශ්වසන ව්‍යායාමයෙහි යෙදෙන්න.",
+                feed2Title: "Calming Rain & Ocean Sounds",
+                feed2Sub: "මනස සන්සුන් කරවන ස්වාභාවික පරිසර ශබ්දවලට සවන්දෙන්න.",
+                feed3Title: "ආතතිය පාලනයට CBT උපක්‍රම",
+                feed3Sub: "සෘණාත්මක සිතුවිලි ධනාත්මකව වෙනස් කරගන්නා ආකාරය පිළිබඳ කෙටි ලිපිය.",
+                bookTitle: "Session එකක් Book කරන්න",
+                sessionTypeLabel: "උපදේශන වර්ගය",
+                opt1: "මානසික සහන සාකච්ඡාව",
+                opt2: "Personal Counseling",
+                dateLabel: "දිනය",
+                timeLabel: "වේලාව",
+                submitBtn: "ඉල්ලීම යොමු කරන්න",
+                mySessionsTitle: "ඔබගේ Session ඉල්ලීම් (My Sessions)"
+            },
+            en: {
+                brand: "Sansun Dashboard",
+                logout: "Logout",
+                welcomeSub: "View your mental wellness schedule and personal progress reports here.",
+                pdfBtn: "Download PDF Report",
+                profile: "Profile",
+                nameLabel: "Name",
+                emailLabel: "Email",
+                goalsTitle: "Personal Goals",
+                streakCount: "5 Days Streak!",
+                streakSub: "Daily wellness goals completed successfully.",
+                goal1: "10 mins Daily Meditation",
+                goal2: "8 Hours Sleep",
+                goal3: "Drink 2L Water",
+                done: "Done",
+                notDone: "Pending",
+                settingsTitle: "Privacy & Settings",
+                pinLabel: "Set PIN Security",
+                pinHolder: "Enter new PIN",
+                reminderLabel: "Daily Mood Reminder Time",
+                saveBtn: "Save Settings",
+                chartTitle: "Mood Analytics Chart",
+                weekly: "Weekly",
+                monthly: "Monthly",
+                insightText: "You are happier on weekends. Stress increases slightly mid-week.",
+                feedTitle: "Personalized Content Feed",
+                catAll: "All",
+                catAudio: "Guided Audio",
+                catMusic: "Relaxing Music",
+                catArticle: "Articles",
+                feed1Title: "4-7-8 Breathing Exercise",
+                feed1Sub: "Practice 30-second breathing exercise to relieve stress.",
+                feed2Title: "Calming Rain & Ocean Sounds",
+                feed2Sub: "Listen to relaxing nature sounds to calm your mind.",
+                feed3Title: "මානසික ආතතියෙන් මිදී සහනයෙන් ජීවත් වෙමු",
+                feed3Sub: "Short article on how to reframe negative thoughts positively.",
+                bookTitle: "Book a Session",
+                sessionTypeLabel: "Counseling Type",
+                opt1: "Mental Support Session",
+                opt2: "Personal Counseling",
+                dateLabel: "Date",
+                timeLabel: "Time",
+                submitBtn: "Submit Request",
+                mySessionsTitle: "My Session Requests"
+            }
+        };
 
         document.addEventListener("DOMContentLoaded", () => {
             currentUser = JSON.parse(localStorage.getItem('sansun_user'));
             
-            // Security Check
             if (!currentUser) {
                 window.location.href = 'index.html';
                 return;
@@ -223,11 +621,112 @@
             document.getElementById('userAvatar').innerText = name.charAt(0).toUpperCase();
 
             loadUserSessions();
+            initMoodChart();
         });
+
+        function filterFeed(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const items = document.querySelectorAll('#personalizedFeed .content-card');
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+      /* FUNCTION TO OPEN INTERACTIVE MODAL FOR CONTENT */
+/* FUNCTION TO OPEN INTERACTIVE MODAL FOR CONTENT */
+function openContent(type) {
+    const modal = document.getElementById('contentModal');
+    const modalBody = document.getElementById('modalBody');
+
+    if (type === 'breathing') {
+        modalBody.innerHTML = `
+            <h3 style="color:var(--primary); text-align:center;">4-7-8 Breathing Exercise</h3>
+            <p style="font-size:0.85rem; text-align:center; color:var(--text-muted); margin-top:5px;">තත්පර 4ක් හුස්ම ගන්න, තත්පර 7ක් තබාගන්න, තත්පර 8ක් හෙමින් පිටකරන්න.</p>
+            <div class="breathing-circle">Breathe</div>
+        `;
+        
+    } else if (type === 'music') {
+        modalBody.innerHTML = `
+            <h3 style="color:var(--primary); margin-bottom:15px; font-size:1.5rem;">Calming Rain & Ocean Sounds</h3>
+            <p style="font-size:1rem; color:var(--text-muted); margin-bottom:15px;">මනස සන්සුන් කරවන ස්වාභාවික පරිසර ශබ්දවලට සවන්දෙන්න.</p>
+            
+            <!-- Custom Direct Audio Player -->
+            <div style="background: var(--primary-light); padding: 20px; border-radius: 12px; text-align: center;">
+                <i class="fa-solid fa-music fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
+                <audio controls style="width:100%; outline:none;">
+                    <source src="assests/atlasaudio-calm-nature-510279.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        `;
+    } else if (type === 'article') {
+        modalBody.innerHTML = `
+            <h3 style="color:var(--primary); margin-bottom:12px; font-size:1.2rem;">මානසික ආතතියෙන් මිදී සහනයෙන් ජීවත් වෙමු</h3>
+            <div style="font-size:0.9rem; line-height:1.6; color:var(--text-dark); max-height: 380px; overflow-y: auto; padding-right: 8px;">
+                <p>වර්තමාන සංකීර්ණ හා වේගවත් ජීවන රටාව තුළ කුඩා දරුවාගේ සිට මහල්ලා දක්වා ඕනෑම කෙනෙකුට මුහුණ දීමට සිදු වන ප්‍රධානතම ගැටලුවක් වන්නේ මානසික ආතතියයි (Stress). අධ්‍යාපන කටයුතු, රැකියා පීඩනය, ආර්ථික ගැටලු මෙන්ම පුද්ගලයන් අතර පවතින සබඳතාවල සිදුවන බිඳවැටීම් මේ සඳහා ප්‍රධාන වශයෙන් හේතු වේ. මානසික ආතතිය යනු හුදෙක් සිතට විතරක් බලපාන තත්ත්වයක් නොව, එය දීර්ඝකාලීනව පැවතීමෙන් ශරීර සෞඛ්‍යයටද දැඩි ලෙස හානි පමුණුවයි. එම නිසා මානසික ආතතිය නිවැරදිව කළමනාකරණය කරගනිමින් සුවබර ජීවිතයක් පවත්වාගෙන යාම ඉතා අත්‍යවශ්‍ය වේ.</p>
+                <br>
+                <p>මානසික ආතතියෙන් මිදීම සඳහා අනුගමනය කළ හැකි සාර්ථකම සහ සරලම පියවරක් වන්නේ ශ්වසන අභ්‍යාස සහ භාවනාවයි. සිතට දැඩි පීඩනයක් දැනෙන අවස්ථාවලදී ගැඹුරු හුස්ම ගනිමින් මනස එක්තැන් කරගැනීමට උත්සාහ කිරීමෙන් ස්නායු පද්ධතිය ක්ෂණිකව ශාන්ත වේ. එමෙන්ම දිනපතා විනාඩි 10ක් හෝ 15ක් ආනාපානසති භාවනාවේ හෝ මෛත්‍රී භාවනාවේ යෙදීමෙන් සිතේ එකඟතාව සහ සහනය වර්ධනය කරගත හැක.</p>
+                <br>
+                <p>ඊට අමතරව අපගේ දෛනික ජීවන රටාව සහ ශාරීරික සෞඛ්‍යය කෙරෙහි අවධානය යොමු කිරීමද වැදගත් වේ. දිනපතා ඇවිදීම, යෝග අභ්‍යාස හෝ යම් ක්‍රීඩාවක යෙදීම මගින් ශරීරය තුළ සතුටුදායක හෝමෝන නිපදවීම සිදු වන අතර එමගින් ආතතිය අවම වේ. තවද, රාත්‍රියට පැය 7–8ක සුවබර නින්දක් ලබාගැනීමත්, පෝෂදායී ආහාර වේලක් ලබාගැනීමත් මනසේ නැවුම් බව සුරැකීමට උපකාරී වේ. අධික ලෙස තේ, කෝපි හෝ සීනි සහිත ආහාර භාවිතය සීමා කිරීමද මෙහිදී ඉතා වැදගත් වේ.</p>
+                <br>
+                <p>මනසේ පීඩනය අඩු කරගැනීමට නම් කාලය සහ සිතුවිලි කළමනාකරණය කරගැනීමටද පුරුදු විය යුතුය. තමන්ට කළ හැකි ප්‍රමාණයට වඩා වැඩ භාරගැනීමෙන් වැළකී, දිනපතා කළ යුතු වැඩ ප්‍රමුඛතාව අනුව සැලසුම් කර ගැනීමෙන් අනවශ්‍ය කලබලකාරී බව නැති වේ. තමන්ට පාලනය කළ නොහැකි දේවල් ගැන සිතා ලතැවෙනවාට වඩා, තමන්ට වෙනස් කළ හැකි දේවල් කෙරෙහි පමණක් අවධානය යොමු කිරීම සිතට ලොකු සැහැල්ලුවක් ලබා දෙයි.</p>
+                <br>
+                <p>අවසාන වශයෙන්, සිතේ ඇති වන පීඩනය තනිවම සඟවාගෙන නොසිට විශ්වාසවන්ත අයෙකු සමඟ බෙදාගැනීම හෝ සංගීතයට සවන්දීම, චිත්‍ර ඇඳීම සහ පොත්පත් කියවීම වැනි තමන් ප්‍රිය කරන විනෝදාංශයක යෙදීම මගින් මනස නිදහස් කරගත හැක. යම් හෙයකින් මෙම ක්‍රමවලින් පසුවත් ආතතිය පාලනය කරගත නොහැකි මට්ටමක පවතී නම්, සුදුසුකම් ලත් උපදේශකයෙකු හෝ වෛද්‍යවරයෙකුගේ සහාය ලබාගැනීමට පසුබට නොවිය යුතුය. මානසික සුවතාව යනු අපගේ සතුටුදායක ජීවිතයක අඩිතාලමයි.</p>
+            </div>
+        `;
+    }
+
+    modal.style.display = 'flex';
+
+}
+
+            
+        function closeContent() {
+            document.getElementById('contentModal').style.display = 'none';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.getElementById('themeBtn');
+            if(document.body.classList.contains('dark-mode')) {
+                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'si' ? 'en' : 'si';
+            document.getElementById('langBtn').innerText = currentLang === 'si' ? 'English' : 'සිංහල';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(i18nData[currentLang][key]) {
+                    el.innerText = i18nData[currentLang][key];
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(i18nData[currentLang][key]) {
+                    el.placeholder = i18nData[currentLang][key];
+                }
+            });
+            
+            document.getElementById('dailyAffirmation').innerText = currentLang === 'si' 
+                ? '"සෑම දිනකම අලුත් ආරම්භයකි. ඔබේ සන්සුන් භාවය ඔබේ බලයයි."'
+                : '"Every day is a new beginning. Your calm is your power."';
+        }
 
         function handleLogout() {
             localStorage.removeItem('sansun_user');
-            window.location.href = 'index.html'; // Fixed redirect bug
+            window.location.href = 'index.html';
         }
 
         function handleBooking(event) {
@@ -251,7 +750,7 @@
             localStorage.setItem('sansun_sessions', JSON.stringify(sessions));
 
             document.getElementById('bookingForm').reset();
-            alert('ඔබගේ Session ඉල්ලීම සාර්ථකව යොමු කරන ලදී!');
+            alert(currentLang === 'si' ? 'ඔබගේ Session ඉල්ලීම සාර්ථකව යොමු කරන ලදී!' : 'Session request submitted successfully!');
             loadUserSessions();
         }
 
@@ -263,14 +762,13 @@
             let mySessions = sessions.filter(s => s.userEmail === currentUser.email);
 
             if (mySessions.length === 0) {
-                eventsContainer.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem;">තවම Session ඉල්ලීම් සිදුකර නොමැත.</p>`;
+                eventsContainer.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem;">${currentLang === 'si' ? 'තවම Session ඉල්ලීම් සිදුකර නොමැත.' : 'No sessions booked yet.'}</p>`;
                 return;
             }
 
             mySessions.forEach(s => {
                 const el = document.createElement('div');
                 el.className = 'event-card';
-                
                 let badgeClass = s.status === 'Approved' ? 'Approved' : (s.status === 'Rejected' ? 'Rejected' : 'Pending');
                 
                 el.innerHTML = `
@@ -284,6 +782,65 @@
                 `;
                 eventsContainer.appendChild(el);
             });
+        }
+
+        function initMoodChart() {
+            const ctx = document.getElementById('moodChart').getContext('2d');
+            moodChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['සඳුදා', 'අඟහරුවාදා', 'බදාදා', 'බ්‍රහස්පතින්දා', 'සික්\u200Dරොදා', 'සෙනසුරාදා', 'ඉරිදා'],
+                    datasets: [{
+                        label: 'Mood Level',
+                        data: [3, 2, 4, 3, 5, 5, 4],
+                        borderColor: '#4a7c59',
+                        backgroundColor: 'rgba(74, 124, 89, 0.15)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { min: 1, max: 5 } }
+                }
+            });
+        }
+
+        function updateChart() {
+            const filter = document.getElementById('timeFilter').value;
+            if (filter === 'monthly') {
+                moodChartInstance.data.labels = currentLang === 'si' ? ['සති 1', 'සති 2', 'සති 3', 'සති 4'] : ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                moodChartInstance.data.datasets[0].data = [3, 4, 2, 5];
+                document.getElementById('aiInsightText').innerText = currentLang === 'si' ? "පසුගිය මාසයේ 3වන සතියේ ආතතිය ඉහළ ගොස් ඇති අතර 4වන සතියේ ප්‍රගතියක් පෙන්වයි." : "Stress peaked in week 3 of last month, but improved in week 4.";
+            } else {
+                moodChartInstance.data.labels = currentLang === 'si' ? ['සඳුදා', 'අඟහරුවාදා', 'බදාදා', 'බ්‍රහස්පතින්දා', 'සිකුරාදා', 'සෙනසුරාදා', 'ඉරිදා'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                moodChartInstance.data.datasets[0].data = [3, 2, 4, 3, 5, 5, 4];
+                document.getElementById('aiInsightText').innerText = i18nData[currentLang].insightText;
+            }
+            moodChartInstance.update();
+        }
+
+        function generatePDF() {
+            const element = document.getElementById('reportArea');
+            const opt = {
+                margin:       0.3,
+                filename:     `Sansun_Mental_Health_Report_${currentUser.name || 'User'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function toggleGoal(checkbox) {
+            const badge = checkbox.parentElement.nextElementSibling;
+            if (checkbox.checked) {
+                badge.className = 'badge Approved';
+                badge.innerText = i18nData[currentLang].done;
+            } else {
+                badge.className = 'badge Pending';
+                badge.innerText = i18nData[currentLang].notDone;
+            }
         }
     </script>
 </body>
