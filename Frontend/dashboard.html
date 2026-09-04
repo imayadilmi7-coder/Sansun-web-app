@@ -84,11 +84,6 @@
 
         .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
 
-        @media (max-width: 900px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .welcome-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
-        }
-
         .card { 
             background: var(--card-bg); 
             border-radius: 18px; 
@@ -279,16 +274,16 @@
             align-items: center;
         }
 
-       .modal-content {
-    background: var(--card-bg);
-    color: var(--text-dark);
-    padding: 2.5rem;
-    border-radius: 20px;
-    max-width: 750px; /* Modal එක විශාල කළා */
-    width: 92%;
-    position: relative;
-    box-shadow: var(--card-shadow);
-}
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 750px;
+            width: 92%;
+            position: relative;
+            box-shadow: var(--card-shadow);
+        }
 
         .close-btn {
             position: absolute;
@@ -317,77 +312,70 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.4); }
         }
+
         /* Responsive Design for Mobile Devices */
-@media (max-width: 768px) {
-    /* Navbar styling for mobile */
-    .navbar {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
 
-    .user-nav-profile {
-        width: 100%;
-        justify-content: space-between;
-    }
+            .user-nav-profile {
+                width: 100%;
+                justify-content: space-between;
+            }
 
-    /* Container adjustments */
-    .container {
-        margin: 1rem auto;
-        padding: 0 1rem;
-    }
+            .container {
+                margin: 1rem auto;
+                padding: 0 1rem;
+            }
 
-    /* Grid layout to single column */
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
 
-    /* Welcome Banner */
-    .welcome-card {
-        padding: 1.5rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
+            .welcome-card {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
 
-    .welcome-card h2 {
-        font-size: 1.4rem;
-    }
+            .welcome-card h2 {
+                font-size: 1.4rem;
+            }
 
-    .btn-pdf {
-        width: 100%;
-        justify-content: center;
-    }
+            .btn-pdf {
+                width: 100%;
+                justify-content: center;
+            }
 
-    /* Card padding optimization */
-    .card {
-        padding: 1.2rem;
-    }
+            .card {
+                padding: 1.2rem;
+            }
 
-    /* Modal dialog popup width for phones */
-    .modal-content {
-        width: 95%;
-        padding: 1.5rem;
-        margin: 10px;
-    }
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+                margin: 10px;
+            }
 
-    /* Category filter horizontal scroll */
-    .feed-filters {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: 8px;
-        -webkit-overflow-scrolling: touch;
-    }
+            .feed-filters {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 8px;
+                -webkit-overflow-scrolling: touch;
+            }
 
-    /* Table Responsiveness (If Admin Dashboard uses tables) */
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-}
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 <body>
@@ -456,6 +444,31 @@
                             <span class="badge Approved" data-i18n="done">තැබුවා</span>
                         </div>
                     </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fa-solid fa-mobile-screen-button"></i> <span>Screen Time & Mood Tracker</span></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>අද Screen Time එක (පැය වලින්)</label>
+                        <input type="number" id="screenHours" placeholder="උදා: 4.5" step="0.5" min="0" max="24">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>වැඩිපුරම භාවිත කළ App එක</label>
+                        <select id="topApp">
+                            <option value="Social Media (TikTok/FB/Insta)">Social Media (TikTok/FB/Insta)</option>
+                            <option value="Messaging (WhatsApp/Telegram)">Messaging (WhatsApp/Telegram)</option>
+                            <option value="Gaming">Gaming</option>
+                            <option value="Educational / Work">Educational / Work</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-submit" onclick="logScreenTime()"><i class="fa-solid fa-plus"></i> Record Screen Time</button>
+
+                    <div id="screenTimeInsight" style="margin-top: 15px; display: none; padding: 12px; border-radius: 10px; font-size: 0.88rem;"></div>
                 </div>
 
                 <div class="card">
@@ -664,7 +677,7 @@
                 feed1Sub: "Practice 30-second breathing exercise to relieve stress.",
                 feed2Title: "Calming Rain & Ocean Sounds",
                 feed2Sub: "Listen to relaxing nature sounds to calm your mind.",
-                feed3Title: "මානසික ආතතියෙන් මිදී සහනයෙන් ජීවත් වෙමු",
+                feed3Title: "Managing Stress Effectively",
                 feed3Sub: "Short article on how to reframe negative thoughts positively.",
                 bookTitle: "Book a Session",
                 sessionTypeLabel: "Counseling Type",
@@ -676,6 +689,44 @@
                 mySessionsTitle: "My Session Requests"
             }
         };
+
+        function logScreenTime() {
+            const hours = parseFloat(document.getElementById('screenHours').value);
+            const app = document.getElementById('topApp').value;
+            const insightBox = document.getElementById('screenTimeInsight');
+
+            if (!hours || hours <= 0) {
+                alert('කරුණාකර නිවැරදි පැය ගණන ඇතුළත් කරන්න.');
+                return;
+            }
+
+            let message = '';
+            let bgColor = '';
+            let textColor = '';
+
+            if (hours > 5) {
+                message = `⚠️ <strong>අවධානයට:</strong> ඔබ අද පැය ${hours}ක් screen time ගත කර ඇත (${app}). අධික Screen Time ප්‍රමාණය මානසික ආතතිය සහ නින්ද නොයාම වැඩි කිරීමට හේතු විය හැක.`;
+                bgColor = '#fef2f2';
+                textColor = '#991b1b';
+            } else if (hours >= 3) {
+                message = `💡 <strong>හොඳයි:</strong> ඔබ අද පැය ${hours}ක් Screen Time ලෙස ගත කර ඇත. මානසික සහනය සඳහා කෙටි විවේක (Breathing exercise) ලබාගන්න.`;
+                bgColor = '#fff7ed';
+                textColor = '#c2410c';
+            } else {
+                message = `🎉 <strong>විශිෂ්ටයි!</strong> පැය ${hours}ක ඉතා හොඳ Screen Time පාලනයක්! මෙය ඔබේ මානසික සන්සුන් බව වැඩි කිරීමට උපකාරී වේ.`;
+                bgColor = '#dcfce7';
+                textColor = '#15803d';
+            }
+
+            insightBox.style.display = 'block';
+            insightBox.style.background = bgColor;
+            insightBox.style.color = textColor;
+            insightBox.innerHTML = message;
+
+            let logs = JSON.parse(localStorage.getItem('sansun_screentime')) || [];
+            logs.push({ date: new Date().toLocaleDateString(), hours, app });
+            localStorage.setItem('sansun_screentime', JSON.stringify(logs));
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             currentUser = JSON.parse(localStorage.getItem('sansun_user'));
@@ -709,55 +760,49 @@
             });
         }
 
-      /* FUNCTION TO OPEN INTERACTIVE MODAL FOR CONTENT */
-/* FUNCTION TO OPEN INTERACTIVE MODAL FOR CONTENT */
-function openContent(type) {
-    const modal = document.getElementById('contentModal');
-    const modalBody = document.getElementById('modalBody');
+        function openContent(type) {
+            const modal = document.getElementById('contentModal');
+            const modalBody = document.getElementById('modalBody');
 
-    if (type === 'breathing') {
-        modalBody.innerHTML = `
-            <h3 style="color:var(--primary); text-align:center;">4-7-8 Breathing Exercise</h3>
-            <p style="font-size:0.85rem; text-align:center; color:var(--text-muted); margin-top:5px;">තත්පර 4ක් හුස්ම ගන්න, තත්පර 7ක් තබාගන්න, තත්පර 8ක් හෙමින් පිටකරන්න.</p>
-            <div class="breathing-circle">Breathe</div>
-        `;
-        
-    } else if (type === 'music') {
-        modalBody.innerHTML = `
-            <h3 style="color:var(--primary); margin-bottom:15px; font-size:1.5rem;">Calming Rain & Ocean Sounds</h3>
-            <p style="font-size:1rem; color:var(--text-muted); margin-bottom:15px;">මනස සන්සුන් කරවන ස්වාභාවික පරිසර ශබ්දවලට සවන්දෙන්න.</p>
-            
-            <!-- Custom Direct Audio Player -->
-            <div style="background: var(--primary-light); padding: 20px; border-radius: 12px; text-align: center;">
-                <i class="fa-solid fa-music fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
-                <audio controls style="width:100%; outline:none;">
-                    <source src="assests/atlasaudio-calm-nature-510279.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-        `;
-    } else if (type === 'article') {
-        modalBody.innerHTML = `
-            <h3 style="color:var(--primary); margin-bottom:12px; font-size:1.2rem;">මානසික ආතතියෙන් මිදී සහනයෙන් ජීවත් වෙමු</h3>
-            <div style="font-size:0.9rem; line-height:1.6; color:var(--text-dark); max-height: 380px; overflow-y: auto; padding-right: 8px;">
-                <p>වර්තමාන සංකීර්ණ හා වේගවත් ජීවන රටාව තුළ කුඩා දරුවාගේ සිට මහල්ලා දක්වා ඕනෑම කෙනෙකුට මුහුණ දීමට සිදු වන ප්‍රධානතම ගැටලුවක් වන්නේ මානසික ආතතියයි (Stress). අධ්‍යාපන කටයුතු, රැකියා පීඩනය, ආර්ථික ගැටලු මෙන්ම පුද්ගලයන් අතර පවතින සබඳතාවල සිදුවන බිඳවැටීම් මේ සඳහා ප්‍රධාන වශයෙන් හේතු වේ. මානසික ආතතිය යනු හුදෙක් සිතට විතරක් බලපාන තත්ත්වයක් නොව, එය දීර්ඝකාලීනව පැවතීමෙන් ශරීර සෞඛ්‍යයටද දැඩි ලෙස හානි පමුණුවයි. එම නිසා මානසික ආතතිය නිවැරදිව කළමනාකරණය කරගනිමින් සුවබර ජීවිතයක් පවත්වාගෙන යාම ඉතා අත්‍යවශ්‍ය වේ.</p>
-                <br>
-                <p>මානසික ආතතියෙන් මිදීම සඳහා අනුගමනය කළ හැකි සාර්ථකම සහ සරලම පියවරක් වන්නේ ශ්වසන අභ්‍යාස සහ භාවනාවයි. සිතට දැඩි පීඩනයක් දැනෙන අවස්ථාවලදී ගැඹුරු හුස්ම ගනිමින් මනස එක්තැන් කරගැනීමට උත්සාහ කිරීමෙන් ස්නායු පද්ධතිය ක්ෂණිකව ශාන්ත වේ. එමෙන්ම දිනපතා විනාඩි 10ක් හෝ 15ක් ආනාපානසති භාවනාවේ හෝ මෛත්‍රී භාවනාවේ යෙදීමෙන් සිතේ එකඟතාව සහ සහනය වර්ධනය කරගත හැක.</p>
-                <br>
-                <p>ඊට අමතරව අපගේ දෛනික ජීවන රටාව සහ ශාරීරික සෞඛ්‍යය කෙරෙහි අවධානය යොමු කිරීමද වැදගත් වේ. දිනපතා ඇවිදීම, යෝග අභ්‍යාස හෝ යම් ක්‍රීඩාවක යෙදීම මගින් ශරීරය තුළ සතුටුදායක හෝමෝන නිපදවීම සිදු වන අතර එමගින් ආතතිය අවම වේ. තවද, රාත්‍රියට පැය 7–8ක සුවබර නින්දක් ලබාගැනීමත්, පෝෂදායී ආහාර වේලක් ලබාගැනීමත් මනසේ නැවුම් බව සුරැකීමට උපකාරී වේ. අධික ලෙස තේ, කෝපි හෝ සීනි සහිත ආහාර භාවිතය සීමා කිරීමද මෙහිදී ඉතා වැදගත් වේ.</p>
-                <br>
-                <p>මනසේ පීඩනය අඩු කරගැනීමට නම් කාලය සහ සිතුවිලි කළමනාකරණය කරගැනීමටද පුරුදු විය යුතුය. තමන්ට කළ හැකි ප්‍රමාණයට වඩා වැඩ භාරගැනීමෙන් වැළකී, දිනපතා කළ යුතු වැඩ ප්‍රමුඛතාව අනුව සැලසුම් කර ගැනීමෙන් අනවශ්‍ය කලබලකාරී බව නැති වේ. තමන්ට පාලනය කළ නොහැකි දේවල් ගැන සිතා ලතැවෙනවාට වඩා, තමන්ට වෙනස් කළ හැකි දේවල් කෙරෙහි පමණක් අවධානය යොමු කිරීම සිතට ලොකු සැහැල්ලුවක් ලබා දෙයි.</p>
-                <br>
-                <p>අවසාන වශයෙන්, සිතේ ඇති වන පීඩනය තනිවම සඟවාගෙන නොසිට විශ්වාසවන්ත අයෙකු සමඟ බෙදාගැනීම හෝ සංගීතයට සවන්දීම, චිත්‍ර ඇඳීම සහ පොත්පත් කියවීම වැනි තමන් ප්‍රිය කරන විනෝදාංශයක යෙදීම මගින් මනස නිදහස් කරගත හැක. යම් හෙයකින් මෙම ක්‍රමවලින් පසුවත් ආතතිය පාලනය කරගත නොහැකි මට්ටමක පවතී නම්, සුදුසුකම් ලත් උපදේශකයෙකු හෝ වෛද්‍යවරයෙකුගේ සහාය ලබාගැනීමට පසුබට නොවිය යුතුය. මානසික සුවතාව යනු අපගේ සතුටුදායක ජීවිතයක අඩිතාලමයි.</p>
-            </div>
-        `;
-    }
+            if (type === 'breathing') {
+                modalBody.innerHTML = `
+                    <h3 style="color:var(--primary); text-align:center;">4-7-8 Breathing Exercise</h3>
+                    <p style="font-size:0.85rem; text-align:center; color:var(--text-muted); margin-top:5px;">තත්පර 4ක් හුස්ම ගන්න, තත්පර 7ක් තබාගන්න, තත්පර 8ක් හෙමින් පිටකරන්න.</p>
+                    <div class="breathing-circle">Breathe</div>
+                `;
+            } else if (type === 'music') {
+                modalBody.innerHTML = `
+                    <h3 style="color:var(--primary); margin-bottom:15px; font-size:1.5rem;">Calming Rain & Ocean Sounds</h3>
+                    <p style="font-size:1rem; color:var(--text-muted); margin-bottom:15px;">මනස සන්සුන් කරවන ස්වාභාවික පරිසර ශබ්දවලට සවන්දෙන්න.</p>
+                    
+                    <div style="background: var(--primary-light); padding: 20px; border-radius: 12px; text-align: center;">
+                        <i class="fa-solid fa-music fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
+                        <audio controls style="width:100%; outline:none;">
+                            <source src="assets/atlasaudio-calm-nature-510279.mp3" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                `;
+            } else if (type === 'article') {
+                modalBody.innerHTML = `
+                    <h3 style="color:var(--primary); margin-bottom:12px; font-size:1.2rem;">මානසික ආතතියෙන් මිදී සහනයෙන් ජීවත් වෙමු</h3>
+                    <div style="font-size:0.9rem; line-height:1.6; color:var(--text-dark); max-height: 380px; overflow-y: auto; padding-right: 8px;">
+                        <p>වර්තමාන සංකීර්ණ හා වේගවත් ජීවන රටාව තුළ කුඩා දරුවාගේ සිට මහල්ලා දක්වා ඕනෑම කෙනෙකුට මුහුණ දීමට සිදු වන ප්‍රධානතම ගැටලුවක් වන්නේ මානසික ආතතියයි (Stress). අධ්‍යාපන කටයුතු, රැකියා පීඩනය, ආර්ථික ගැටලු මෙන්ම පුද්ගලයන් අතර පවතින සබඳතාවල සිදුවන බිඳවැටීම් මේ සඳහා ප්‍රධාන වශයෙන් හේතු වේ. මානසික ආතතිය යනු හුදෙක් සිතට විතරක් බලපාන තත්ත්වයක් නොව, එය දීර්ඝකාලීනව පැවතීමෙන් ශරීර සෞඛ්‍යයටද දැඩි ලෙස හානි පමුණුවයි. එම නිසා මානසික ආතතිය නිවැරදිව කළමනාකරණය කරගනිමින් සුවබර ජීවිතයක් පවත්වාගෙන යාම ඉතා අත්‍යවශ්‍ය වේ.</p>
+                        <br>
+                        <p>මානසික ආතතියෙන් මිදීම සඳහා අනුගමනය කළ හැකි සාර්ථකම සහ සරලම පියවරක් වන්නේ ශ්වසන අභ්‍යාස සහ භාවනාවයි. සිතට දැඩි පීඩනයක් දැනෙන අවස්ථාවලදී ගැඹුරු හුස්ම ගනිමින් මනස එක්තැන් කරගැනීමට උත්සාහ කිරීමෙන් ස්නායු පද්ධතිය ක්ෂණිකව ශාන්ත වේ. එමෙන්ම දිනපතා විනාඩි 10ක් හෝ 15ක් ආනාපානසති භාවනාවේ හෝ මෛත්‍රී භාවනාවේ යෙදීමෙන් සිතේ එකඟතාව සහ සහනය වර්ධනය කරගත හැක.</p>
+                        <br>
+                        <p>ඊට අමතරව අපගේ දෛනික ජීවන රටාව සහ ශාරීරික සෞඛ්‍යය කෙරෙහි අවධානය යොමු කිරීමද වැදගත් වේ. දිනපතා ඇවිදීම, යෝග අභ්‍යාස හෝ යම් ක්‍රීඩාවක යෙදීම මගින් ශරීරය තුළ සතුටුදායක හෝමෝන නිපදවීම සිදු වන අතර එමගින් ආතතිය අවම වේ. තවද, රාත්‍රියට පැය 7–8ක සුවබර නින්දක් ලබාගැනීමත්, පෝෂදායී ආහාර වේලක් ලබාගැනීමත් මනසේ නැවුම් බව සුරැකීමට උපකාරී වේ. අධික ලෙස තේ, කෝපි හෝ සීනි සහිත ආහාර භාවිතය සීමා කිරීමද මෙහිදී ඉතා වැදගත් වේ.</p>
+                        <br>
+                        <p>මනසේ පීඩනය අඩු කරගැනීමට නම් කාලය සහ සිතුවිලි කළමනාකරණය කරගැනීමටද පුරුදු විය යුතුය. තමන්ට කළ හැකි ප්‍රමාණයට වඩා වැඩ භාරගැනීමෙන් වැළකී, දිනපතා කළ යුතු වැඩ ප්‍රමුඛතාව අනුව සැලසුම් කර ගැනීමෙන් අනවශ්‍ය කලබලකාරී බව නැති වේ. තමන්ට පාලනය කළ නොහැකි දේවල් ගැන සිතා ලතැවෙනවාට වඩා, තමන්ට වෙනස් කළ හැකි දේවල් කෙරෙහි පමණක් අවධානය යොමු කිරීම සිතට ලොකු සැහැල්ලුවක් ලබා දෙයි.</p>
+                        <br>
+                        <p>අවසාන වශයෙන්, සිතේ ඇති වන පීඩනය තනිවම සඟවාගෙන නොසිට විශ්වාසවන්ත අයෙකු සමඟ බෙදාගැනීම හෝ සංගීතයට සවන්දීම, චිත්‍ර ඇඳීම සහ පොත්පත් කියවීම වැනි තමන් ප්‍රිය කරන විනෝදාංශයක යෙදීම මගින් මනස නිදහස් කරගත හැක. යම් හෙයකින් මෙම ක්‍රමවලින් පසුවත් ආතතිය පාලනය කරගත නොහැකි මට්ටමක පවතී නම්, සුදුසුකම් ලත් උපදේශකයෙකු හෝ වෛද්‍යවරයෙකුගේ සහාය ලබාගැනීමට පසුබට නොවිය යුතුය. මානසික සුවතාව යනු අපගේ සතුටුදායක ජීවිතයක අඩිතාලමයි.</p>
+                    </div>
+                `;
+            }
 
-    modal.style.display = 'flex';
+            modal.style.display = 'flex';
+        }
 
-}
-
-            
         function closeContent() {
             document.getElementById('contentModal').style.display = 'none';
         }
@@ -860,7 +905,7 @@ function openContent(type) {
             moodChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['සඳුදා', 'අඟහරුවාදා', 'බදාදා', 'බ්‍රහස්පතින්දා', 'සික්\u200Dරොදා', 'සෙනසුරාදා', 'ඉරිදා'],
+                    labels: ['සඳුදා', 'අඟහරුවාදා', 'බදාදා', 'බ්‍රහස්පතින්දා', 'සිකුරාදා', 'සෙනසුරාදා', 'ඉරිදා'],
                     datasets: [{
                         label: 'Mood Level',
                         data: [3, 2, 4, 3, 5, 5, 4],
