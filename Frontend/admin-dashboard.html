@@ -40,7 +40,7 @@
         .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
 
         .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-        .chart-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: var(--card-shadow); }
+        .chart-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; justify-content: center; }
         .chart-header { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
 
         .table-card { background: white; border-radius: 16px; padding: 1.8rem; box-shadow: var(--card-shadow); margin-bottom: 2rem; }
@@ -60,79 +60,16 @@
         .btn-approve { background: #dcfce7; color: #15803d; }
         .btn-reject { background: #fee2e2; color: #ef4444; }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        /* Responsive Design for Mobile Devices */
-@media (max-width: 768px) {
-    /* Navbar styling for mobile */
-    .navbar {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
+        @media (max-width: 992px) {
+            .charts-grid { grid-template-columns: 1fr; }
+        }
 
-    .user-nav-profile {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    /* Container adjustments */
-    .container {
-        margin: 1rem auto;
-        padding: 0 1rem;
-    }
-
-    /* Grid layout to single column */
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    /* Welcome Banner */
-    .welcome-card {
-        padding: 1.5rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .welcome-card h2 {
-        font-size: 1.4rem;
-    }
-
-    .btn-pdf {
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* Card padding optimization */
-    .card {
-        padding: 1.2rem;
-    }
-
-    /* Modal dialog popup width for phones */
-    .modal-content {
-        width: 95%;
-        padding: 1.5rem;
-        margin: 10px;
-    }
-
-    /* Category filter horizontal scroll */
-    .feed-filters {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: 8px;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Table Responsiveness (If Admin Dashboard uses tables) */
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-}
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; overflow: auto; }
+            .sidebar { width: 100%; padding: 1rem; }
+            .main-content { padding: 1rem; }
+            table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
     </style>
 </head>
 <body>
@@ -141,8 +78,7 @@
         <div>
             <div class="brand"><i class="fa-solid fa-brain"></i> Sansun Admin</div>
             <div class="menu-label">Main Menu</div>
-            <a class="menu-item active" onclick="switchTab('analytics', this)"><i class="fa-solid fa-chart-line"></i> Analytics & Overview</a>
-            <a class="menu-item" onclick="switchTab('sessions', this)"><i class="fa-solid fa-calendar-check"></i> Counseling Sessions</a>
+            <a class="menu-item active"><i class="fa-solid fa-gauge"></i> Control Dashboard</a>
         </div>
         <a class="menu-item" style="color: #ef4444;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </aside>
@@ -151,7 +87,7 @@
         <div class="top-bar">
             <div>
                 <h2 style="font-weight: 700;">Admin Control Panel</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">පද්ධතියේ පරිශීලකයන් සහ සේවා ඉල්ලීම් පාලන පුවරුව</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">පද්ධතියේ පරිශීලකයන්, ප්‍රස්ථාර සහ සේවා ඉල්ලීම් පාලන පුවරුව</p>
             </div>
             <div class="admin-profile">
                 <div class="avatar">A</div>
@@ -159,70 +95,74 @@
             </div>
         </div>
 
-        <div id="analytics" class="tab-content active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <span>මුළු Session ඉල්ලීම්</span>
-                        <h3 id="statTotalSessions">0</h3>
-                    </div>
-                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-calendar"></i></div>
+        <!-- 1. Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>මුළු Session ඉල්ලීම්</span>
+                    <h3 id="statTotalSessions">0</h3>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <span>Pending ඉල්ලීම්</span>
-                        <h3 id="statPendingSessions">0</h3>
-                    </div>
-                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-clock"></i></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <span>Approve කළ Session</span>
-                        <h3 id="statApprovedSessions">0</h3>
-                    </div>
-                    <div class="stat-icon" style="background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-circle-check"></i></div>
-                </div>
+                <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-calendar"></i></div>
             </div>
-
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-header"><span>මාසික උපදේශන වාර</span></div>
-                    <canvas id="lineChart" height="120"></canvas>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Pending ඉල්ලීම්</span>
+                    <h3 id="statPendingSessions">0</h3>
                 </div>
-                <div class="chart-card">
-                    <div class="chart-header"><span>Session Status Breakdown</span></div>
+                <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-clock"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Approve කළ Session</span>
+                    <h3 id="statApprovedSessions">0</h3>
+                </div>
+                <div class="stat-icon" style="background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+        </div>
+
+        <!-- 2. Charts Section -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header"><span>Session ඉල්ලීම් වර්ධනය (Request Growth)</span></div>
+                <canvas id="lineChart" height="120"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header"><span>Session Status Breakdown</span></div>
+                <div style="max-height: 200px; display: flex; justify-content: center;">
                     <canvas id="pieChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <div id="sessions" class="tab-content">
-            <div class="table-card">
-                <div class="table-header">
-                    <h3>උපදේශන ඉල්ලීම් (Counseling Requests)</h3>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>පරිශීලකයා</th>
-                            <th>වර්ගය</th>
-                            <th>දිනය සහ වේලාව</th>
-                            <th>තත්ත්වය</th>
-                            <th>ක්‍රියාමාර්ග</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sessionsTableBody">
-                        <!-- Dynamic Sessions -->
-                    </tbody>
-                </table>
+        <!-- 3. Session Requests Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3>උපදේශන ඉල්ලීම් (Counseling Requests)</h3>
             </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>පරිශීලකයා</th>
+                        <th>වර්ගය</th>
+                        <th>දිනය සහ වේලාව</th>
+                        <th>තත්ත්වය</th>
+                        <th>ක්‍රියාමාර්ග</th>
+                    </tr>
+                </thead>
+                <tbody id="sessionsTableBody">
+                    <!-- Dynamic Sessions -->
+                </tbody>
+            </table>
         </div>
     </main>
 
     <script>
+        let lineChartInstance = null;
+        let pieChartInstance = null;
+
         document.addEventListener("DOMContentLoaded", () => {
             const user = JSON.parse(localStorage.getItem('sansun_user'));
-            // Admin Security Check
+            
             if (!user || user.role !== 'admin') {
                 alert('මෙම පිටුවට පිවිසීමට Admin බලතල හිමිව නැත.');
                 window.location.href = 'index.html';
@@ -231,15 +171,7 @@
             document.getElementById('adminName').innerText = user.name || 'Admin';
 
             renderAdminData();
-            initCharts();
         });
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
-        }
 
         function logout() {
             if (confirm("ඔබට පද්ධතියෙන් ඉවත් වීමට අවශ්‍යද?")) {
@@ -262,25 +194,27 @@
 
             if (sessions.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">කිසිදු Session ඉල්ලීමක් නැත.</td></tr>`;
-                return;
+            } else {
+                sessions.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${s.userName}</strong><br><span style="font-size: 0.8rem; color: var(--text-muted);">${s.userEmail}</span></td>
+                        <td>${s.type}</td>
+                        <td>${s.date} | ${s.time}</td>
+                        <td><span class="badge ${s.status}">${s.status}</span></td>
+                        <td>
+                            ${s.status === 'Pending' ? `
+                                <button class="btn-action btn-approve" onclick="updateStatus('${s.id}', 'Approved')">Approve</button>
+                                <button class="btn-action btn-reject" onclick="updateStatus('${s.id}', 'Rejected')">Reject</button>
+                            ` : '<span style="color:var(--text-muted); font-size:0.8rem;">සලකා බලන ලදී</span>'}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
 
-            sessions.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${s.userName}</strong><br><span style="font-size: 0.8rem; color: var(--text-muted);">${s.userEmail}</span></td>
-                    <td>${s.type}</td>
-                    <td>${s.date} | ${s.time}</td>
-                    <td><span class="badge ${s.status}">${s.status}</span></td>
-                    <td>
-                        ${s.status === 'Pending' ? `
-                            <button class="btn-action btn-approve" onclick="updateStatus('${s.id}', 'Approved')">Approve</button>
-                            <button class="btn-action btn-reject" onclick="updateStatus('${s.id}', 'Rejected')">Reject</button>
-                        ` : '<span style="color:var(--text-muted); font-size:0.8rem;">සලකා බලන ලදී</span>'}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            // Update Charts using Session Requests Data only
+            updateCharts(sessions);
         }
 
         function updateStatus(id, newStatus) {
@@ -293,35 +227,45 @@
             }
         }
 
-        function initCharts() {
+        function updateCharts(sessions) {
+            const pendingCount = sessions.filter(s => s.status === 'Pending').length;
+            const approvedCount = sessions.filter(s => s.status === 'Approved').length;
+            const rejectedCount = sessions.filter(s => s.status === 'Rejected').length;
+
+            // Destroy old charts to avoid overlapping
+            if (lineChartInstance) lineChartInstance.destroy();
+            if (pieChartInstance) pieChartInstance.destroy();
+
+            // Line Chart: Request Count
             const ctxLine = document.getElementById('lineChart').getContext('2d');
-            new Chart(ctxLine, {
+            lineChartInstance = new Chart(ctxLine, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug','Sep'],
+                    labels: ['Pending Requests', 'Approved Sessions', 'Rejected Requests'],
                     datasets: [{
-                        label: 'Sessions',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 1],
+                        label: 'Total Requests',
+                        data: [pendingCount, approvedCount, rejectedCount],
                         borderColor: '#4a7c59',
-                        backgroundColor: 'rgba(74, 124, 89, 0.1)',
+                        backgroundColor: 'rgba(74, 124, 89, 0.15)',
                         fill: true,
-                        tension: 0.4
+                        tension: 0.3
                     }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
 
+            // Pie/Doughnut Chart: Status Breakdown
             const ctxPie = document.getElementById('pieChart').getContext('2d');
-            new Chart(ctxPie, {
+            pieChartInstance = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
                     labels: ['Approved', 'Pending', 'Rejected'],
                     datasets: [{
-                        data: [1, 0, 0],
+                        data: [approvedCount, pendingCount, rejectedCount],
                         backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
                     }]
                 },
-                options: { responsive: true }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
     </script>
