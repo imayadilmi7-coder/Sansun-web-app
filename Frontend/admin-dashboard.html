@@ -62,6 +62,77 @@
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        /* Responsive Design for Mobile Devices */
+@media (max-width: 768px) {
+    /* Navbar styling for mobile */
+    .navbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .user-nav-profile {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Container adjustments */
+    .container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+
+    /* Grid layout to single column */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Welcome Banner */
+    .welcome-card {
+        padding: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .welcome-card h2 {
+        font-size: 1.4rem;
+    }
+
+    .btn-pdf {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Card padding optimization */
+    .card {
+        padding: 1.2rem;
+    }
+
+    /* Modal dialog popup width for phones */
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 10px;
+    }
+
+    /* Category filter horizontal scroll */
+    .feed-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Table Responsiveness (If Admin Dashboard uses tables) */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
     </style>
 </head>
 <body>
